@@ -1,0 +1,188 @@
+-- Users Table
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    role ENUM('admin', 'sponsor', 'influencer') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Sponsors Table
+CREATE TABLE sponsors (
+    sponsor_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    company_name VARCHAR(255),
+    industry VARCHAR(255),
+    budget DECIMAL(10, 2),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+-- Influencers Table
+CREATE TABLE influencers (
+    influencer_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    name VARCHAR(255),
+    category VARCHAR(255),
+    niche VARCHAR(255),
+    reach INT,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+-- Campaigns Table
+CREATE TABLE campaigns (
+    campaign_id INT AUTO_INCREMENT PRIMARY KEY,
+    sponsor_id INT,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    start_date DATE,
+    end_date DATE,
+    budget DECIMAL(10, 2),
+    visibility ENUM('public', 'private'),
+    goals TEXT,
+    FOREIGN KEY (sponsor_id) REFERENCES sponsors(sponsor_id)
+);
+
+-- Ad Requests Table
+CREATE TABLE ad_requests (
+    ad_request_id INT AUTO_INCREMENT PRIMARY KEY,
+    campaign_id INT,
+    influencer_id INT,
+    requirements TEXT,
+    payment_amount DECIMAL(10, 2),
+    status ENUM('pending', 'accepted', 'rejected', 'negotiation'),
+    messages TEXT,
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id),
+    FOREIGN KEY (influencer_id) REFERENCES influencers(influencer_id)
+);
+
+-- Negotiations Table
+CREATE TABLE negotiations (
+    negotiation_id INT AUTO_INCREMENT PRIMARY KEY,
+    ad_request_id INT,
+    influencer_id INT,
+    proposed_payment_amount DECIMAL(10, 2),
+    negotiation_status ENUM('pending', 'accepted', 'rejected'),
+    FOREIGN KEY (ad_request_id) REFERENCES ad_requests(ad_request_id),
+    FOREIGN KEY (influencer_id) REFERENCES influencers(influencer_id)
+);
+
+-- Flags Table for inappropriate campaigns/users
+CREATE TABLE flags (
+    flag_id INT AUTO_INCREMENT PRIMARY KEY,
+    flagged_by INT,
+    user_id INT,
+    campaign_id INT,
+    reason TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (flagged_by) REFERENCES users(user_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id)
+);
+
+
+
+
+
+>>>`flask --app app.py --debug run`
+
+
+
+
+
+# SQLite expects these values to be Python date objects, not strings.
+# Convert to Python date objects
+start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+
+
+
+
+
+# Admin Dashboard 
+[0] Total Users
+[1] Total Number of Sponsors
+[2] Total Number of Campaigns - |_ private
+                                |_ public
+[3] Total Number of ad_request  |_ pending
+                                |_ rejected
+                                |_ negotiation
+                                |_ accepted
+[4] Total Number of Influencers 
+[5] Flagged items
+
+
+   
+
+make 2 tabled 
+Flag User and FlagCampaingh
+`admin_allflags.html` : make 2 sections (User | Campaign)
+
+chore : done with Admin Functionalities !!
+
+
+
+
+
+Campaign Management - for the sponsors
+[1] CURD Campaigns_ |
+                    |- read (DONE)
+                    |- Create (DONE)
+                    |- Update (DONE)
+                    |- Delete (DONE)
+[2] Categorize it into various niches [DONE].
+
+>> update database !!!
+
+
+
+
+# Sponsor Dashboard
+
+    Search by NICHE  {search_bar}
+____________________________________________________________________________________________________
+|                                                                                                   |
+|  CampaignName description  niche  budget start_date end_date goals  visibility  EDIT  DELETE      |
+|                                                                                                   |     
+_____________________________________________________________________________________________________
+
+
+
+Ad request Management - for the sponsors
+[1] CURD Ad request_|
+                    |- read (DONE)
+                    |- Create  (DONE)
+                    |- Update  (DONE)
+                    |- Delete  (DONE)
+
+
+
+
+#TODO
+>> Influencers login and Registration (DONE)
+>> Influencers Dashboard _|- Show all `PUBLIC` ad_request (DONE)
+                          |- Search  (DONE)
+                          |- able to negociate (DONE)
+
+
+
+>> Search for influencers, public campaigns
+
+The sponsors should be able to search 
+for relevant influencers based on their niche, 
+reach, followers etc.  (DONE)
+[4] Search for Sponsor (DONE)
+
+
+The Influencers should be able to search for 
+public campaigns based on their niche, 
+relevance etc.         (DONE)
+
+[1] Campaign and Negotiations amount for respective influencer !! 
+[2] Sponsor should be able to see the negotiation (DONE)
+[3] Search for Campaign for Influencer (DONE)
+
+[5] If ad_request is already accepted then No negotiation and rejections !!(DONE)
+[6] Accept ad_request (DONE)
+[7] negociate ad_request (DONE)
+[8] Reject ad_request (DONE)

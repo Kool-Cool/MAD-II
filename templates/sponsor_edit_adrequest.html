@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsor Edit AdRequest</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/sponsor/managecampaign">Sponsor Manage Campaign</a>
+    <div class="ml-auto">
+        <button class="btn btn-danger" onclick="location.href='/logout'">Log Out</button>
+        <button class="btn btn-primary" onclick="location.href='{{url_for('sponsor.sponsor_managecampaign')}}'">Manage Campaigns</button>
+        <button class="btn btn-secondary" onclick="location.href='{{url_for('sponsor.search_influencer')}}'">Search Influencers</button>
+    </div>
+</nav>
+
+<div id="flash" class="container mt-4">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-danger">
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% endwith %}
+</div>
+
+<div class="container mt-4">
+    <h1>Edit AdRequest!</h1>
+</div>
+
+<div class="container">
+    <form action="{{ url_for('sponsor.edit_adrequest', adrequest_id=ad_data.ad_request_id) }}" method="POST">
+        <div class="form-group">
+            <label for="campaignid">Campaign ID:</label>
+            <input type="number" step="1" min="0" class="form-control" id="campaignid" name="campaignid" value="{{ad_data.campaign_id}}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="influencerid">Influencer ID:</label>
+            <input type="number" step="1" min="0" class="form-control" id="influencerid" name="influencerid" value="{{ad_data.influencer_id}}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="messages">Message:</label>
+            <textarea class="form-control" id="messages" name="messages" required>{{ad_data.messages}}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="payment_amount">Payment Amount:</label>
+            <input type="number" step="1" min="0" class="form-control" id="payment_amount" name="payment_amount" value="{{ad_data.payment_amount}}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="requirements">Requirements:</label>
+            <textarea class="form-control" id="requirements" name="requirements" required>{{ad_data.requirements}}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Status:</label>
+            <div class="form-check">
+                <input type="radio" class="form-check-input" id="pending" name="status" value="pending" {% if ad_data.status=='pending' %}checked{% endif %} required>
+                <label class="form-check-label" for="pending">Pending</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" class="form-check-input" id="accepted" name="status" value="accepted" {% if ad_data.status=='accepted' %}checked{% endif %}>
+                <label class="form-check-label" for="accepted">Accepted</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" class="form-check-input" id="rejected" name="status" value="rejected" {% if ad_data.status=='rejected' %}checked{% endif %}>
+                <label class="form-check-label" for="rejected">Rejected</label>
+            </div>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<!-- Include Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></
