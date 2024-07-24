@@ -1,10 +1,10 @@
 steps
 
 s1]
-    Make Componet (<template> ...)
+    Make View (<template> ...)
 
 s2]
-    Add in `App.vue`  (under header by importing the Componet)
+    Add in routes  (under header by importing the Componet)
 
 s3]
     call api in Componet
