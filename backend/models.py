@@ -51,6 +51,7 @@ class Sponsor(db.Model):
     company_name = db.Column(db.String(255))
     industry = db.Column(db.String(255))
     budget = db.Column(db.Numeric(10, 2))
+    status = db.Column(db.Enum("pending", "approved"), default="pending")
 
     campaigns = db.relationship("Campaign", backref="sponsor", lazy=True)
 
@@ -180,7 +181,7 @@ def init_db(app):
         db.create_all()
 
         # Check if the database already contains data
-        if not User.query.first():
+        if not User.query.filter_by(role="admin").first():
             # Add dummy data
             admin = User(
                 username="admin",
@@ -188,6 +189,8 @@ def init_db(app):
                 role="admin",
             )
             admin.set_password("password")
+            db.session.add(admin)
+            db.session.commit()
 
             sponsor = User(
                 username="sponsor",
@@ -195,6 +198,9 @@ def init_db(app):
                 role="sponsor",
             )
             sponsor.set_password("password")
+            db.session.add(sponsor)
+            db.session.commit()
+
 
             influencer = User(
                 username="influencer",
@@ -202,11 +208,9 @@ def init_db(app):
                 role="influencer",
             )
             influencer.set_password("password")
-
-            db.session.add(admin)
-            db.session.add(sponsor)
             db.session.add(influencer)
             db.session.commit()
+
 
             sponsor_data = Sponsor(
                 user_id=sponsor.user_id,
