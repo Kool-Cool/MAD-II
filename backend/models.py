@@ -51,7 +51,7 @@ class Sponsor(db.Model):
     company_name = db.Column(db.String(255))
     industry = db.Column(db.String(255))
     budget = db.Column(db.Numeric(10, 2))
-    status = db.Column(db.Enum("pending", "approved"), default="pending")
+    is_approved = db.Column(db.Boolean, default=False)
 
     campaigns = db.relationship("Campaign", backref="sponsor", lazy=True)
 

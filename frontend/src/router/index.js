@@ -4,7 +4,7 @@ import NotFound from '@/views/NotFound/NotFound.vue';
 import AdminLogin from '@/views/Admin/AdminLogin.vue';
 import AdminDashboard from '@/views/Admin/AdminDashboard.vue';
 import AdminRegistration from '@/views/Admin/AdminRegistration.vue';
-
+import AdminPendingSponsors from '@/views/Admin/AdminPendingSponsors.vue';
 const routes = [
   { path: '/', name: 'Home', component: IndexView },
   {path :'/:pathMatch(.*)*' ,name:'NotFound',component: NotFound},
@@ -25,6 +25,12 @@ const routes = [
     component: AdminDashboard,
     meta: { requiresAuth: true },
   },
+  {
+    path:'/admin/pending_sponsors',
+    name: 'pending_sponsors',
+    component : AdminPendingSponsors,
+    meta: { requiresAuth: true },
+  }
 
 
 ];

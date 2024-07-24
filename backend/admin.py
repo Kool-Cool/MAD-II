@@ -91,21 +91,39 @@ def dashboard_data():
             "total_influencers": Influencer.query.count(),
             "flagged_users": UserFlag.query.count(),
             "flagged_campaigns": CampaignFlag.query.count(),
-            "pending_sponsors": Sponsor.query.filter_by(status="pending").count()
+            "pending_sponsors": Sponsor.query.filter_by(is_approved=False).count()  # Count pending sponsors
         }
-        print(data)
+        # print(data)
         return jsonify(data)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@admin.route("/pending_sponsors", methods=["GET"])
+@token_required
+@admin_required
+def pending_sponsors():
+    try:
+        sponsors = Sponsor.query.filter_by(is_approved=False).all()
+        return jsonify([sponsor.to_dict() for sponsor in sponsors])
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 @admin.route("/approve_sponsor/<int:sponsor_id>", methods=["POST"])
 @token_required
 @admin_required
 def approve_sponsor(sponsor_id):
-    sponsor = Sponsor.query.get_or_404(sponsor_id)
-    sponsor.status = "approved"
-    db.session.commit()
-    return jsonify({"message": "Sponsor approved"}), 200
+    try:
+        sponsor = Sponsor.query.get(sponsor_id)
+        if not sponsor:
+            return jsonify({"message": "Sponsor not found"}), 404
+        sponsor.is_approved = True
+        db.session.commit()
+        return jsonify({"message": "Sponsor approved successfully"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 # @admin.before_app_request
 def setup():

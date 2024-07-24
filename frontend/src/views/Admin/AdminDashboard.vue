@@ -5,7 +5,11 @@ import Logout from '../Logout/Logout.vue';
 <template>
     <div class="dashboard container mt-5">
       <Logout></Logout>
+
       <h1 class="text-center mb-4">Admin Dashboard</h1>
+
+
+
       <div v-if="stats" class="row">
         <div class="col-md-4 mb-3">
           <div class="card">
@@ -47,7 +51,19 @@ import Logout from '../Logout/Logout.vue';
             </div>
           </div>
         </div>
+        <div class="col-md-4 mb-3">
+          <div class="card highlight">
+            <div class="card-body">
+              <h5 class="card-title">
+                <a href="http://localhost:5173/admin/pending_sponsors" class="highlight-link">Pending Sponsors Approval</a>
+              </h5>
+              <p class="card-text">{{ stats.pending_sponsors }}</p>
+            </div>
+          </div>
+        </div>
+
         <!-- Add more statistics as needed -->
+         
       </div>
       <div v-else>
         <p>Loading...</p>
@@ -78,9 +94,17 @@ import Logout from '../Logout/Logout.vue';
       }
     },
   };
-  </script>
-  
-  <style scoped>
-  /* Add your styles here */
-  </style>
+</script>
+
+
+<style scoped>
+.highlight {
+  border: 2px solid blueviolet; /* Highlight border color */
+}
+
+.highlight-link {
+  color: #ffcc00; /* Highlight link color */
+  font-weight: bold;
+}
+</style>
   
