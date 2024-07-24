@@ -16,12 +16,12 @@ s3]
 [x] landing page (done)
 
 [] Admin pages
-    - password security using `Flask-Bcrypt`
-    - login and logout 
+    - password security using `Flask-Bcrypt` (done)
+    - login and logout (done)
         session-based authentication (Flask-Security) 
         or 
-        stateless, token-based authentication (JWT). for  Vue.js frontend, JWT-based authentication
-    
+        stateless, token-based authentication (JWT). for  Vue.js frontend, JWT-based authentication (done)
+    - Approve Sponsor (done)
 
 
 [] Sponsor pages
