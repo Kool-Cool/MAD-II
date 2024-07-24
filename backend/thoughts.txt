@@ -10,3 +10,19 @@ s3]
     call api in Componet
     <script>
 
+
+## TODO
+
+[x] landing page (done)
+
+[] Admin pages
+    - password security using `Flask-Bcrypt`
+    - login and logout 
+    session-based authentication (Flask-Security) 
+    or 
+    stateless, token-based authentication (JWT). for  Vue.js frontend, JWT-based authentication
+
+
+[] Sponsor pages
+
+[] Influencer pages

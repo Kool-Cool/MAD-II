@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import Logout from './Logout/Logout.vue';
+
 export default {
   name: 'Index',
   data() {
@@ -42,6 +44,9 @@ export default {
       // Using Vue Router's $router.push with named route
       this.$router.push({ name: 'influencer.login' });
     }
+  },
+  components: {
+    Logout
   }
 };
 </script>
