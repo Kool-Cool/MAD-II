@@ -3,11 +3,8 @@ import Logout from '../Logout/Logout.vue';
 </script>
 
 <template>
+  <Logout DashboardTitle="Admin Dashboard"></Logout>
     <div class="dashboard container mt-5">
-      <Logout></Logout>
-
-      <h1 class="text-center mb-4">Admin Dashboard</h1>
-
 
 
       <div v-if="stats" class="row">
@@ -87,7 +84,7 @@ import Logout from '../Logout/Logout.vue';
         const response = await axios.get('http://localhost:5000/admin/dashboard/data', {
           headers: { 'Authorization': `Bearer ${this.$store.state.token}` },
         });
-        console.log('Dashboard data:', response.data);
+        // console.log('Dashboard data:', response.data);
         this.stats = response.data;
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);

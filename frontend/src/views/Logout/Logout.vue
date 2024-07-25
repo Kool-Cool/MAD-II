@@ -1,6 +1,7 @@
 <template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">{{ DashboardTitle }}</a>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
           <button class="btn btn-outline-light" @click="logout">Logout</button>
@@ -14,6 +15,12 @@
 import axios from 'axios';
 
 export default {
+  props: {
+    DashboardTitle: {
+      type: String,
+      required: true
+    }
+  },
   methods: {
     async logout() {
       try {
@@ -32,3 +39,7 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+/* Add your custom styles here */
+</style>

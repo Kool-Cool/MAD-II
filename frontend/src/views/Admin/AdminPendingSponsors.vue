@@ -1,4 +1,9 @@
+<script setup>
+import Logout from '@/views/Logout/Logout.vue';
+</script>
+
 <template>
+  <Logout DashboardTitle="Admin Dashboard"></Logout>
     <div class="pending-sponsors container mt-5">
       <h1 class="text-center mb-4">Pending Sponsors</h1>
       <div v-if="sponsors.length" class="list-group">

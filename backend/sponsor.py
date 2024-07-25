@@ -107,4 +107,28 @@ def register():
         return jsonify({"message": error_message}), 400
 
     
+@sponsor.route("/dashboard/data", methods=["GET"])
+@cross_origin()
+@token_required
+@sponsor_required
+def dashboard_data():
+    try:
+        # Extract the user information from the request context (set by token_required)
+        user_id = request.user.get('user_id')
 
+        # Fetch the sponsor's record based on the user_id
+        sponsor = Sponsor.query.filter_by(user_id=user_id).first()
+
+        if not sponsor:
+            return jsonify({"message": "Sponsor not found"}), 404
+
+        # Fetch campaigns associated with the sponsor's sponsor_id
+        campaigns = Campaign.query.filter_by(sponsor_id=sponsor.sponsor_id).all()
+
+        # Serialize campaign data
+        campaign_data = [campaign.to_dict() for campaign in campaigns]
+        print(campaign_data)
+        return jsonify({"campaigns": campaign_data}), 200
+
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500

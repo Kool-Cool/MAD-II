@@ -49,7 +49,7 @@
             password: this.password
           });
           localStorage.setItem('token', response.data.token);
-          this.$router.push('sponsor/dashboard');
+          this.$router.push('/sponsor/dashboard');
         } catch (error) {
             console.log(error) // catch erro
           if (error.response && error.response.data.message) {
