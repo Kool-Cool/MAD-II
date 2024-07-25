@@ -18,7 +18,8 @@
             </div>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Login</button>
+        <button :disabled="!isFormValid" type="submit" class="btn btn-primary btn-block">Login</button>
+        
         <p v-if="errorMessage" class="text-danger mt-3">{{ errorMessage }}</p>
       </form>
       <button @click="$router.push('/admin/register')" class="btn btn-secondary btn-block mt-3">New Admin Registration</button>
@@ -38,6 +39,11 @@
         errorMessage: '',
       };
     },
+    computed: {
+    isFormValid() {
+      return this.username && this.password;
+    },
+  },
     methods: {
       ...mapMutations(['setToken']),
       async login() {

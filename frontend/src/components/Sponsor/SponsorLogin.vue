@@ -18,10 +18,10 @@
             </div>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Login</button>
+        <button :disabled="!isFormValid" type="submit" class="btn btn-primary btn-block">Login</button>
         <p v-if="error" class="text-danger mt-3">{{ error }}</p>
       </form>
-      <button @click="$router.push('/sponsor/register')" class="btn btn-secondary btn-block mt-3">New Admin Registration</button>
+      <button @click="$router.push('/sponsor/register')" class="btn btn-secondary btn-block mt-3">New Sponsor Registration</button>
     </div>
 </template>
   
@@ -36,6 +36,11 @@
         error: ''
       };
     },
+    computed: {
+    isFormValid() {
+      return this.username && this.password ;
+    },
+  },
     methods: {
       async login() {
         try {

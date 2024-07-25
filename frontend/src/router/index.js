@@ -6,6 +6,7 @@ import AdminDashboard from "@/views/Admin/AdminDashboard.vue";
 import AdminRegistration from "@/views/Admin/AdminRegistration.vue";
 import AdminPendingSponsors from "@/views/Admin/AdminPendingSponsors.vue";
 import SponsorLogin from "@/components/Sponsor/SponsorLogin.vue";
+import SponsorRegistration from "@/components/Sponsor/SponsorRegistration.vue";
 const routes = [
   { path: "/", name: "Home", component: IndexView },
   { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
@@ -41,6 +42,11 @@ const routes = [
     path: "/sponsor/login",
     name: SponsorLogin,
     component: SponsorLogin,
+  },
+  {
+    path: "/sponsor/register",
+    name: SponsorRegistration,
+    component: SponsorRegistration,
   },
 ];
 

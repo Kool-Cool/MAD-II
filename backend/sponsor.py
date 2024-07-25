@@ -51,7 +51,7 @@ def login():
 
     user = User.query.filter_by(username = username).first()
     # print(user)
-    
+
     if user and user.check_password(password):
         sponsor_data = Sponsor.query.filter_by(user_id = user.user_id).first()
         
@@ -67,3 +67,44 @@ def login():
         }, SECRET_KEY, algorithm='HS256')
         return jsonify({"token": token}), 200
     return jsonify({"message": "Invalid credentials"}), 401
+
+
+@sponsor.route("/register" , methods=["POST"])
+def register():
+    data = request.json
+    username = data.get("username")
+    password = data.get("password")
+    email = data.get("email")
+    role = data.get("role")
+    company_name = data.get("company_name")
+    industry = data.get("industry")
+    budget = data.get("budget")
+
+    if User.query.filter_by(username=username).first():
+        return jsonify({"message": "User already exists"}), 400
+    
+    
+    new_user = User(username=username, email=email, role="sponsor")
+    new_user.set_password(password)
+
+    try:
+            db.session.add(new_user)
+            db.session.commit()
+
+            new_sponsor = Sponsor(
+                user_id=new_user.user_id,
+                company_name=company_name,
+                industry=industry,
+                budget=budget,
+            )
+            db.session.add(new_sponsor)
+            db.session.commit()
+            return jsonify({"message": "New Sponsor registered successfully"}), 201
+
+    except Exception as e:
+        error_message = str(e).split("\n")[0]
+        db.session.rollback()
+        return jsonify({"message": error_message}), 400
+
+    
+
