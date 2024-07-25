@@ -5,6 +5,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
 from admin import admin
+from sponsor import sponsor
 from flask_caching import Cache
 
 app = Flask(__name__)
@@ -21,6 +22,8 @@ jwt = JWTManager(app)
 
 
 app.register_blueprint(admin, url_prefix="/admin")
+app.register_blueprint(sponsor, url_prefix="/sponsor")
+
 
 cache = Cache(config={'CACHE_TYPE': 'simple'}) # Simple in-memory cache
 
