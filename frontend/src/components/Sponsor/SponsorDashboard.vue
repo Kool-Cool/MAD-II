@@ -7,6 +7,7 @@ import { jwtDecode } from "jwt-decode";
 <template>
   <div>
     <Logout DashboardTitle="Sponsor Manage Campaign"></Logout>
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="ml-auto">
         
@@ -16,9 +17,10 @@ import { jwtDecode } from "jwt-decode";
         >
           Search Influencers
         </button>
+        <button class="btn btn-primary" @click="exportToCSV">Export as CSV</button>
       </div>
     </nav>
-
+  <p v-if="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</p>
     <div class="container">
       <h1>Welcome, {{ userName }}</h1>
       <p>Manage your campaigns below:</p>
@@ -108,6 +110,8 @@ export default {
       userName: "", // This will be populated with the username from the token
       messages: [], // Replace with actual flash messages
       campaignData: [], // Will be populated with actual campaign data
+      errorMessage: '',
+      
     };
   },
   async created() {
@@ -126,9 +130,11 @@ export default {
       if (response.data.campaigns) {
         this.campaignData = response.data.campaigns;
       } else {
+        this.errorMessage = `Unexpected response structure: ${response.data}`;
         console.error("Unexpected response structure:", response.data);
       }
     } catch (error) {
+      this.errorMessage = error;
       console.error("Failed to fetch dashboard data:", error);
     }
   },
@@ -153,8 +159,27 @@ export default {
         year: "numeric",
       });
     },
-  },
-};
+    exportToCSV() {
+    const token = this.$store.state.token;
+    axios.get('http://localhost:5000/sponsor/export_campaigns', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      responseType: 'blob' // Important for downloading files
+    }).then(response => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'campaigns.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link); // Clean up
+    }).catch(error => {
+      this.errorMessage = "Error exporting campaigns. Please try again.";
+      console.error("Error exporting campaigns:", error);
+    });
+  }
+  }}
 </script>
 
 <style scoped>

@@ -9,6 +9,9 @@ from flask_cors import cross_origin
 import jwt
 from datetime import datetime, timedelta
 from flask_caching import Cache
+import csv
+from io import StringIO
+from flask import Response
 
 # from app import cache
 
@@ -223,6 +226,73 @@ def update_campaign(campaign_id):
 
         db.session.commit()
         return jsonify({"message": "Campaign updated successfully", "success": True}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": str(e), "success": False}), 500
+
+
+@sponsor.route("/export_campaigns", methods=["GET","POST"])
+@cross_origin()
+@token_required
+@sponsor_required
+def export_campaigns():
+    try:
+        user_id = request.user.get('user_id')
+        sponsor_data = Sponsor.query.filter_by(user_id=user_id).first()
+        if not sponsor_data:
+            return jsonify({"message": "Sponsor not found"}), 404
+
+        campaigns = Campaign.query.filter_by(sponsor_id=sponsor_data.sponsor_id).all()
+
+        # Create a CSV response
+        def generate():
+            data = StringIO()
+            writer = csv.writer(data)
+            # Write CSV header
+            writer.writerow(["Name", "Description", "Niche", "Budget", "Start Date", "End Date", "Goals", "Visibility"])
+            # Write campaign data
+            for campaign in campaigns:
+                writer.writerow([
+                    campaign.name,
+                    campaign.description,
+                    campaign.niche,
+                    str(campaign.budget),
+                    campaign.start_date.strftime("%Y-%m-%d"),
+                    campaign.end_date.strftime("%Y-%m-%d"),
+                    campaign.goals,
+                    campaign.visibility
+                ])
+            yield data.getvalue()
+            data.seek(0)
+        
+        return Response(generate(), mimetype='text/csv', headers={"Content-Disposition": "attachment; filename=campaigns.csv"})
+
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+
+
+
+
+
+@sponsor.route("/deletecampaign/<int:campaign_id>", methods=["DELETE"])
+@cross_origin()
+@token_required
+@sponsor_required
+def delete_campaign(campaign_id):
+    try:
+        user_id = request.user.get('user_id')
+        sponsor_data = Sponsor.query.filter_by(user_id=user_id).first()
+        if not sponsor_data:
+            return jsonify({"message": "Sponsor not found"}), 404
+
+        campaign = Campaign.query.get(campaign_id)
+        if not campaign:
+            return jsonify({"message": "Campaign not found"}), 404
+
+        db.session.delete(campaign)
+        db.session.commit()
+        return jsonify({"message": "Campaign deleted successfully", "success": True}), 200
 
     except Exception as e:
         db.session.rollback()
