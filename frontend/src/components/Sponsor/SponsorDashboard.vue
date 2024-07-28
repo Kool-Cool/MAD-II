@@ -10,17 +10,20 @@ import { jwtDecode } from "jwt-decode";
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="ml-auto">
-        
         <button
           class="btn btn-secondary"
           @click="navigateTo('search_influencer')"
         >
           Search Influencers
         </button>
-        <button class="btn btn-primary" @click="exportToCSV">Export as CSV</button>
+        <button class="btn btn-primary" @click="exportToCSV">
+          Export as CSV
+        </button>
       </div>
     </nav>
-  <p v-if="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="alert alert-danger mt-3">
+      {{ errorMessage }}
+    </p>
     <div class="container">
       <h1>Welcome, {{ userName }}</h1>
       <p>Manage your campaigns below:</p>
@@ -37,8 +40,7 @@ import { jwtDecode } from "jwt-decode";
         + Add New Campaign
       </button>
 
-      <div v-if="campaignData.length" class="row" >
-
+      <div v-if="campaignData.length" class="row">
         <!-- <div class="col-md-4 mb-3">
         <div class="card" v-for="data in campaignData" :key="data.campaign_id">
           <div class="card-body">
@@ -47,7 +49,6 @@ import { jwtDecode } from "jwt-decode";
           </div>
         </div>
       </div> -->
-
 
         <table class="table table-striped table-bordered campaign-list">
           <thead class="thead-dark">
@@ -86,7 +87,10 @@ import { jwtDecode } from "jwt-decode";
                 >
                   Delete
                 </button>
-                <button class="btn btn-primary btn-sm"  @click="AdRequest(data.campaign_id)">
+                <button
+                  class="btn btn-primary btn-sm"
+                  @click="AdRequest(data.campaign_id)"
+                >
                   AdRequest
                 </button>
               </td>
@@ -102,16 +106,13 @@ import { jwtDecode } from "jwt-decode";
 </template>
 
 <script>
-
 export default {
-  
   data() {
     return {
       userName: "", // This will be populated with the username from the token
       messages: [], // Replace with actual flash messages
       campaignData: [], // Will be populated with actual campaign data
-      errorMessage: '',
-      
+      errorMessage: "",
     };
   },
   async created() {
@@ -145,11 +146,35 @@ export default {
     editCampaign(campaignId) {
       window.location.href = `/sponsor/editcampaign/${campaignId}`;
     },
-    deleteCampaign(campaignId) {
-      window.location.href = `/sponsor/deletecampaign/${campaignId}`;
+    async deleteCampaign(campaignId) {
+      const confirmDelete = window.confirm(
+        "Do you really want to delete this campaign?"
+      );
+      if (confirmDelete) {
+        try {
+          const response = await axios.delete(
+            `http://localhost:5000/sponsor/deletecampaign/${campaignId}`,
+            {
+              headers: { Authorization: `Bearer ${this.$store.state.token}` },
+            }
+          );
+          if (response.data.success) {
+            this.campaignData = this.campaignData.filter(
+              (c) => c.campaign_id !== campaignId
+            );
+            alert("Campaign deleted successfully.");
+          } else {
+            this.errorMessage = response.data.message;
+          }
+        } catch (error) {
+          this.errorMessage =
+            "An error occurred while trying to delete the campaign.";
+          console.error("Delete campaign error:", error);
+        }
+      }
     },
-    AdRequest(campaignId){
-      window.location.href=`/sponsor/adrequest/${campaignId}`
+    AdRequest(campaignId) {
+      window.location.href = `/sponsor/adrequest/${campaignId}`;
     },
     formatDate(dateString) {
       const date = new Date(dateString);
@@ -160,26 +185,30 @@ export default {
       });
     },
     exportToCSV() {
-    const token = this.$store.state.token;
-    axios.get('http://localhost:5000/sponsor/export_campaigns', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      responseType: 'blob' // Important for downloading files
-    }).then(response => {
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'campaigns.csv');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link); // Clean up
-    }).catch(error => {
-      this.errorMessage = "Error exporting campaigns. Please try again.";
-      console.error("Error exporting campaigns:", error);
-    });
-  }
-  }}
+      const token = this.$store.state.token;
+      axios
+        .get("http://localhost:5000/sponsor/export_campaigns", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          responseType: "blob", // Important for downloading files
+        })
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "campaigns.csv");
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link); // Clean up
+        })
+        .catch((error) => {
+          this.errorMessage = "Error exporting campaigns. Please try again.";
+          console.error("Error exporting campaigns:", error);
+        });
+    },
+  },
+};
 </script>
 
 <style scoped>
