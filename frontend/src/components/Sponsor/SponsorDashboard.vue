@@ -84,6 +84,9 @@ import { jwtDecode } from "jwt-decode";
                 >
                   Delete
                 </button>
+                <button class="btn btn-primary btn-sm"  @click="AdRequest(data.campaign_id)">
+                  AdRequest
+                </button>
               </td>
             </tr>
           </tbody>
@@ -134,10 +137,13 @@ export default {
       window.location.href = `/sponsor/${route}`;
     },
     editCampaign(campaignId) {
-      window.location.href = `/sponsor/managecampaign/editcampaign/${campaignId}`;
+      window.location.href = `/sponsor/editcampaign/${campaignId}`;
     },
     deleteCampaign(campaignId) {
-      window.location.href = `/sponsor/managecampaign/deletecampaign/${campaignId}`;
+      window.location.href = `/sponsor/deletecampaign/${campaignId}`;
+    },
+    AdRequest(campaignId){
+      window.location.href=`/sponsor/adrequest/${campaignId}`
     },
     formatDate(dateString) {
       const date = new Date(dateString);

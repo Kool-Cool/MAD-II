@@ -167,3 +167,63 @@ def add_campaign():
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": str(e), "success": False}), 500
+    
+
+
+
+
+@sponsor.route("/campaign/<int:campaign_id>", methods=["GET"])
+@cross_origin()
+@token_required
+@sponsor_required
+def get_campaign(campaign_id):
+    try:
+        # Fetch the campaign by ID
+        campaign = Campaign.query.get(campaign_id)
+        
+        if not campaign:
+            return jsonify({"message": "Campaign not found"}), 404
+        
+        # Serialize campaign data
+        campaign_data = campaign.to_dict()
+        print(campaign_data)
+        
+        return jsonify({"campaign": campaign_data}), 200
+
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+
+
+
+
+@sponsor.route("/editcampaign/<int:campaign_id>", methods=["PUT"])
+@cross_origin()
+@token_required
+@sponsor_required
+def update_campaign(campaign_id):
+    data = request.json
+    try:
+        user_id = request.user.get('user_id')
+        sponsor_data = Sponsor.query.filter_by(user_id=user_id).first()
+        if not sponsor_data:
+            return jsonify({"message": "Sponsor not found"}), 404
+
+        campaign = Campaign.query.get(campaign_id)
+        if not campaign:
+            return jsonify({"message": "Campaign not found"}), 404
+
+        campaign.name = data.get("name")
+        campaign.description = data.get("description")
+        campaign.start_date = datetime.strptime(data.get("startDate"), "%Y-%m-%d").date()
+        campaign.end_date = datetime.strptime(data.get("endDate"), "%Y-%m-%d").date()
+        campaign.budget = data.get("budget")
+        campaign.visibility = data.get("visibility")
+        campaign.goals = data.get("goals")
+        campaign.niche = data.get("niche")
+
+        db.session.commit()
+        return jsonify({"message": "Campaign updated successfully", "success": True}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": str(e), "success": False}), 500

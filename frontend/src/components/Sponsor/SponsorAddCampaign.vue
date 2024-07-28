@@ -10,6 +10,7 @@ import { jwtDecode } from "jwt-decode";
     </div>
   
     <div class="container">
+    <p v-if="successMessage" class="text-success mt-3">{{ successMessage }}</p>
       <div v-if="messages.length">
         <div class="alert alert-danger">
           <ul>
@@ -147,6 +148,7 @@ import { jwtDecode } from "jwt-decode";
           endDate: "",
         },
         messages: [],
+        successMessage : '',
       };
     },
     methods: {
@@ -159,7 +161,11 @@ import { jwtDecode } from "jwt-decode";
           });
           if (response.data.success) {
             // Handle success (e.g., navigate to another page, clear the form, etc.)
-            this.$router.push('dashboard');
+            this.successMessage = "Campaign Added successfully ! Redirecting to Dashboard !!";
+            this.messages = [] // Clear any previous error message
+            setTimeout(() => {
+          this.$router.push('/sponsor/dashboard');
+        }, 3000);
           } else {
             // Handle error messages
             this.messages = response.data.messages || ["An error occurred"];
