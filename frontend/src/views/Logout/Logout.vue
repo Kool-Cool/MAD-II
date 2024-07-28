@@ -28,7 +28,7 @@ export default {
         await axios.post('/logout');
         
         // Remove JWT from local storage
-        localStorage.removeItem('jwt');
+        localStorage.removeItem('token');
         
         // Redirect to the home or login page
         this.$router.push('/');

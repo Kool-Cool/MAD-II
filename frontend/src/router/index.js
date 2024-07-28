@@ -8,9 +8,11 @@ import AdminPendingSponsors from "@/views/Admin/AdminPendingSponsors.vue";
 import SponsorLogin from "@/components/Sponsor/SponsorLogin.vue";
 import SponsorRegistration from "@/components/Sponsor/SponsorRegistration.vue";
 import SponsorDashboard from "@/components/Sponsor/SponsorDashboard.vue";
+import Logout from "@/views/Logout/Logout.vue";
 const routes = [
   { path: "/", name: "Home", component: IndexView },
   { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
+  {path : "/logout" , name:"Logout" , component : Logout},
 
   //admin-path
   {
@@ -54,6 +56,10 @@ const routes = [
   name: SponsorDashboard,
   component: SponsorDashboard,
   },
+
+
+
+  
 ];
 
 const router = createRouter({

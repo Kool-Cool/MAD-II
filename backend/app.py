@@ -43,7 +43,7 @@ def home():
 @app.route("/logout", methods=["POST","GET"])
 def logout():
     response = make_response(redirect(url_for("home")))
-    response.set_cookie('jwt', '', expires=0)  # Clear the JWT cookie
+    response.set_cookie('jwt', '', expires=0,path="/")  # Clear the JWT cookie
     flash("Log out successful", "success")
     return response
 
