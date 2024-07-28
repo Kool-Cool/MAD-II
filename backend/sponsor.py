@@ -133,3 +133,37 @@ def dashboard_data():
 
     except Exception as e:
         return jsonify({"message": str(e)}), 500
+    
+
+
+@sponsor.route("/addcampaign", methods=["POST"])
+@cross_origin()
+@token_required
+@sponsor_required
+def add_campaign():
+    data = request.json
+    try:
+        user_id = request.user.get('user_id')
+        sponsor_data = Sponsor.query.filter_by(user_id=user_id).first()
+        if not sponsor_data:
+            return jsonify({"message": "Sponsor not found"}), 404
+        
+        new_campaign = Campaign(
+            sponsor_id=sponsor_data.sponsor_id,
+            name=data.get("name"),
+            description=data.get("description"),
+            start_date=datetime.strptime(data.get("startDate"), "%Y-%m-%d").date(),
+            end_date=datetime.strptime(data.get("endDate"), "%Y-%m-%d").date(),
+            budget=data.get("budget"),
+            visibility=data.get("visibility"),
+            goals=data.get("goals"),
+            niche=data.get("niche"),
+        )
+
+        db.session.add(new_campaign)
+        db.session.commit()
+        return jsonify({"message": "New campaign added successfully", "success": True}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": str(e), "success": False}), 500

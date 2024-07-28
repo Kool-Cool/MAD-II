@@ -131,7 +131,7 @@ export default {
   },
   methods: {
     navigateTo(route) {
-      window.location.href = `/${route}`;
+      window.location.href = `/sponsor/${route}`;
     },
     editCampaign(campaignId) {
       window.location.href = `/sponsor/managecampaign/editcampaign/${campaignId}`;
