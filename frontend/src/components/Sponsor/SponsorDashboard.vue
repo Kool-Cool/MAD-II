@@ -9,12 +9,7 @@ import { jwtDecode } from "jwt-decode";
     <Logout DashboardTitle="Sponsor Manage Campaign"></Logout>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="ml-auto">
-        <button
-          class="btn btn-primary"
-          @click="navigateTo('sponsor_manageadrequest')"
-        >
-          Manage Ad Requests
-        </button>
+        
         <button
           class="btn btn-secondary"
           @click="navigateTo('search_influencer')"
@@ -40,7 +35,18 @@ import { jwtDecode } from "jwt-decode";
         + Add New Campaign
       </button>
 
-      <div v-if="campaignData.length">
+      <div v-if="campaignData.length" class="row" >
+
+        <!-- <div class="col-md-4 mb-3">
+        <div class="card" v-for="data in campaignData" :key="data.campaign_id">
+          <div class="card-body">
+            <h5 class="card-title"> {{ data.name }} </h5>
+            <p class="card-text"> {{ data.description }}</p>
+          </div>
+        </div>
+      </div> -->
+
+
         <table class="table table-striped table-bordered campaign-list">
           <thead class="thead-dark">
             <tr>
@@ -91,7 +97,9 @@ import { jwtDecode } from "jwt-decode";
 </template>
 
 <script>
+
 export default {
+  
   data() {
     return {
       userName: "", // This will be populated with the username from the token

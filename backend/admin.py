@@ -8,7 +8,7 @@ from flask_caching import Cache
 
 admin = Blueprint("admin", __name__)
 SECRET_KEY = 'your_secret_key'
-cache = Cache(config={'CACHE_TYPE': 'simple'})  
+
 
 def token_required(f):
     @wraps(f)
@@ -125,6 +125,6 @@ def approve_sponsor(sponsor_id):
         return jsonify({"error": str(e)}), 500
 
 
-# @admin.before_app_request
-def setup():
-    cache.init_app(admin)
+# # @admin.before_app_request
+# def setup():
+#     cache.init_app(admin)

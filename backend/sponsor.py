@@ -10,10 +10,11 @@ import jwt
 from datetime import datetime, timedelta
 from flask_caching import Cache
 
+# from app import cache
 
 sponsor = Blueprint("sponsor", __name__)
 SECRET_KEY = 'your_secret_key'
-cache = Cache(config={'CACHE_TYPE': 'simple'}) 
+# cache = Cache(config={'CACHE_TYPE': 'simple'})
 
 def token_required(f):
     @wraps(f)
@@ -127,7 +128,7 @@ def dashboard_data():
 
         # Serialize campaign data
         campaign_data = [campaign.to_dict() for campaign in campaigns]
-        print(campaign_data)
+        # print(campaign_data)
         return jsonify({"campaigns": campaign_data}), 200
 
     except Exception as e:

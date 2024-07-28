@@ -13,6 +13,7 @@ app = Flask(__name__)
 app.secret_key = "your_secret_key_here"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config['CACHE_TYPE'] = 'simple'
 db.init_app(app)
 
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -25,16 +26,14 @@ app.register_blueprint(admin, url_prefix="/admin")
 app.register_blueprint(sponsor, url_prefix="/sponsor")
 
 
-cache = Cache(config={'CACHE_TYPE': 'simple'}) # Simple in-memory cache
+cache = Cache(app) 
 
 @app.before_request
 def create_tables():
     init_db(app)
-def setup():
-    cache.init_app(app)
 
 
-@cache.cached(timeout=60)
+# @cache.cached(timeout=300) # Cache for 5 minutes
 
 # Routes
 @app.route("/home", methods=["GET", "POST"])
