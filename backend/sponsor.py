@@ -3,7 +3,7 @@
 
 
 from flask import Blueprint, request, jsonify
-from models import db, User, Sponsor, Campaign, AdRequest, Influencer, UserFlag, CampaignFlag
+from models import db, User, Sponsor, Campaign, AdRequest, Influencer, UserFlag, CampaignFlag, Negotiation
 from functools import wraps
 from flask_cors import cross_origin
 import jwt
@@ -305,25 +305,38 @@ def delete_campaign(campaign_id):
 @sponsor_required
 def adrequest_campaign(campaign_id):
     try:
-        # print(campaign_id)
-
         adrequests = (
-            db.session.query(AdRequest, Influencer, Campaign, Sponsor)
+            db.session.query(AdRequest, Influencer, Campaign, Sponsor, Negotiation)
             .join(Influencer, AdRequest.influencer_id == Influencer.influencer_id)
             .join(Campaign, AdRequest.campaign_id == Campaign.campaign_id)
             .join(Sponsor, Campaign.sponsor_id == Sponsor.sponsor_id)
+            .outerjoin(Negotiation, AdRequest.ad_request_id == Negotiation.ad_request_id)
             .filter(AdRequest.campaign_id == campaign_id)
             .all()
         )
 
         adrequest_data = []
-        for adrequest, influencer, campaign, sponsor in adrequests:
+        for adrequest, influencer, campaign, sponsor, negotiation in adrequests:
             adrequest_info = adrequest.to_dict()
             adrequest_info['influencer'] = influencer.to_dict()
             adrequest_info['campaign'] = campaign.to_dict()
             adrequest_info['sponsor'] = sponsor.to_dict()
+            
+            if negotiation:
+                adrequest_info['negotiation'] = {
+                    'negotiation_id': negotiation.negotiation_id,
+                    'negotiation_status': negotiation.negotiation_status,
+                    'negotiated_amount': negotiation.proposed_payment_amount
+                }
+            else:
+                adrequest_info['negotiation'] = {
+                    'negotiation_id': None,
+                    'negotiation_status': None,
+                    'negotiated_amount': None
+                }
+
             adrequest_data.append(adrequest_info)
-        # print(adrequest_data)
+        print(adrequest_data)
         return jsonify({"adrequests": adrequest_data}), 200
 
     except Exception as e:

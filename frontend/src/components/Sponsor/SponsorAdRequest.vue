@@ -8,8 +8,8 @@ import axios from "axios";
 <template>
   <Logout DashboardTitle="Ad Requests"></Logout>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="ml-auto">
-    <button class="btn btn-success mb-3" @click="navigateTo('add_adrequest')">
+    <div class="ml-auto" v-if="adRequests.length">
+    <button class="btn btn-success mb-3" @click="addAdRequest(campaign_id)">
         + New AD request
       </button>
     </div>
@@ -33,6 +33,8 @@ import axios from "axios";
             <th>Payment Amount</th>
             <th>Status</th>
             <th>Messages</th>
+            <th>Negotiated Amount</th>
+            <th>Negotiated Status</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -43,8 +45,13 @@ import axios from "axios";
             <td>{{ formatCurrency(request.payment_amount) }}</td>
             <td>{{ request.status }}</td>
             <td>{{ request.messages }}</td>
+            <td>{{ formatCurrency(request.negotiation.negotiated_amount) }}</td>
+            <td>{{ request.negotiation.negotiation_status }}</td>
+
             <td>
               <button class="btn btn-primary btn-sm" @click="editAdRequest(request.ad_request_id)">Edit</button>
+              <button class="btn btn-danger btn-sm" @click="deleteAdRequest(request.ad_request_id)">Delete</button>
+
             </td>
           </tr>
         </tbody>
@@ -62,6 +69,7 @@ export default {
       adRequests: [],
       campaign: {},
       messages: [],
+      campaign_id : "",
     };
   },
   created() {
@@ -70,7 +78,8 @@ export default {
   methods: {
     async fetchAdRequests() {
       const campaignId = this.$route.params.campaign_id;
-      console.log("Cmap ID" , campaignId);
+      // console.log("Cmap ID" , campaignId);
+      this.campaign_id = campaignId;
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -117,12 +126,15 @@ export default {
         currency: "USD",
       }).format(amount);
     },
-    navigateTo(route) {
-      window.location.href = `/sponsor/${route}`;
+    addAdRequest(adRequestId) {
+      window.location.href = `/sponsor/add_adRequest_data/${adRequestId}`;
     },
     editAdRequest(adRequestId) {
       // Navigate to the edit page with the ad request ID
       window.location.href = `/sponsor/edit_adrequest_data/${adRequestId}`;
+    },
+    deleteAdRequest(adRequestId){
+      window.location.href = `/sponsor/delete_adrequest_data/${adRequestId}`;
     },
   },
 };
