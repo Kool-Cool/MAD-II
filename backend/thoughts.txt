@@ -15,7 +15,7 @@ s3]
 
 [x] landing page (done)
 
-[] Admin pages
+[x] Admin pages
     - password security using `Flask-Bcrypt` (done)
     - login and logout (done)
         session-based authentication (Flask-Security) 
@@ -25,5 +25,15 @@ s3]
 
 
 [] Sponsor pages
+        - CURD campaign (done)
+        - Search Influencer (done)
+        - Download CSV (done)
+        - CURD adRequest (ToDo)
+
 
 [] Influencer pages
+
+[] Backend 
+    - chache
+    - email / notification
+    
