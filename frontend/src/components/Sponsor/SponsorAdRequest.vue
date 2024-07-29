@@ -1,12 +1,19 @@
 <script setup>
 import Logout from "@/views/Logout/Logout.vue";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+
 
 </script>
 
 <template>
   <Logout DashboardTitle="Ad Requests"></Logout>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="ml-auto">
+    <button class="btn btn-success mb-3" @click="navigateTo('add_adrequest')">
+        + New AD request
+      </button>
+    </div>
+  </nav>
   <div class="container mt-5">
     <h2 class="text-center mb-4">{{ campaign.name || "Campaign Details" }}</h2>
     <div v-if="messages.length" class="alert alert-danger">
@@ -18,7 +25,7 @@ import { jwtDecode } from "jwt-decode";
       <p>No ad requests found for this campaign.</p>
     </div>
     <div v-else>
-      <table class="table table-bordered">
+      <table class="table table-striped table-bordered">
         <thead>
           <tr>
             <th>Influencer</th>
@@ -26,6 +33,7 @@ import { jwtDecode } from "jwt-decode";
             <th>Payment Amount</th>
             <th>Status</th>
             <th>Messages</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -35,6 +43,9 @@ import { jwtDecode } from "jwt-decode";
             <td>{{ formatCurrency(request.payment_amount) }}</td>
             <td>{{ request.status }}</td>
             <td>{{ request.messages }}</td>
+            <td>
+              <button class="btn btn-primary btn-sm" @click="editAdRequest(request.ad_request_id)">Edit</button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -68,7 +79,7 @@ export default {
       }
 
       try {
-        const decodedToken = jwtDecode(token);
+        
 
         const response = await axios.get(`/sponsor/adrequest_data/${campaignId}`, {
           headers: {
@@ -77,7 +88,9 @@ export default {
         );
 
         if (response.status === 200) {
-          console.log(response.data)
+
+          // console.log(response.data)
+          
           this.adRequests = response.data.adrequests;
           this.campaign = this.adRequests.length > 0 ? this.adRequests[0].campaign : {};
           this.messages = [];
@@ -103,6 +116,13 @@ export default {
         style: "currency",
         currency: "USD",
       }).format(amount);
+    },
+    navigateTo(route) {
+      window.location.href = `/sponsor/${route}`;
+    },
+    editAdRequest(adRequestId) {
+      // Navigate to the edit page with the ad request ID
+      window.location.href = `/sponsor/edit_adrequest_data/${adRequestId}`;
     },
   },
 };
