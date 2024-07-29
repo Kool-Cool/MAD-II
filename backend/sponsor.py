@@ -189,7 +189,7 @@ def get_campaign(campaign_id):
         
         # Serialize campaign data
         campaign_data = campaign.to_dict()
-        print(campaign_data)
+        # print(campaign_data)
         
         return jsonify({"campaign": campaign_data}), 200
 
@@ -336,9 +336,44 @@ def adrequest_campaign(campaign_id):
                 }
 
             adrequest_data.append(adrequest_info)
-        print(adrequest_data)
+        # print(adrequest_data)
         return jsonify({"adrequests": adrequest_data}), 200
 
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": str(e), "success": False}), 500
+
+
+@sponsor.route("/add_adRequest_data", methods=["POST"])
+@cross_origin()
+@token_required
+@sponsor_required
+def add_adRequest_data():
+    data = request.json
+    # print(data)
+    try:
+        user_id = request.user.get('user_id')
+        sponsor_data = Sponsor.query.filter_by(user_id=user_id).first()
+        if not sponsor_data:
+            return jsonify({"message": "Sponsor not found"}), 404
+        payment_amount= data['payment_amount']
+        print(type(payment_amount))
+        payment_amount= float(data['payment_amount'])
+        print(type(payment_amount))
+
+        new_ad_req = AdRequest(
+            campaign_id = data["campaign_id"],
+            influencer_id=data['influencer_id'],
+            requirements=data['requirements'],
+            payment_amount= payment_amount,
+            messages=data['messages'],
+        )
+        db.session.add(new_ad_req)
+        db.session.commit()
+        return jsonify({"message": "New ad_request added successfully", "success": True}), 201
+
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": str(e), "success": False}), 500
+    

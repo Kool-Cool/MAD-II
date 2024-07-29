@@ -8,7 +8,7 @@ import axios from "axios";
 <template>
   <Logout DashboardTitle="Ad Requests"></Logout>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="ml-auto" v-if="adRequests.length">
+    <div class="ml-auto">
     <button class="btn btn-success mb-3" @click="addAdRequest(campaign_id)">
         + New AD request
       </button>

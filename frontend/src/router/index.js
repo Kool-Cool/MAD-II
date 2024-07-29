@@ -12,12 +12,12 @@ import Logout from "@/views/Logout/Logout.vue";
 import SponsorAddCampaign from "@/components/Sponsor/SponsorAddCampaign.vue";
 import SponsorEditCampaign from "@/components/Sponsor/SponsorEditCampaign.vue";
 import SponsorAdRequest from "@/components/Sponsor/SponsorAdRequest.vue";
-
+import SponsorAddadd_adRequest_data from "@/components/Sponsor/SponsorAddadd_adRequest_data.vue";
 
 const routes = [
   { path: "/", name: "Home", component: IndexView },
   { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
-  {path : "/logout" , name:"Logout" , component : Logout},
+  { path: "/logout", name: "Logout", component: Logout },
 
   //admin-path
   {
@@ -57,32 +57,36 @@ const routes = [
     component: SponsorRegistration,
   },
   {
-  path: "/sponsor/dashboard",
-  name: SponsorDashboard,
-  component: SponsorDashboard,
-  meta: { requiresAuth: true },
-  },
-  {
-    path : "/sponsor/addcampaign",
-    name : SponsorAddCampaign,
-    component : SponsorAddCampaign,
+    path: "/sponsor/dashboard",
+    name: SponsorDashboard,
+    component: SponsorDashboard,
     meta: { requiresAuth: true },
   },
   {
-    path : `/sponsor/editcampaign/:campaign_id`,
-    name : SponsorEditCampaign,
-    component : SponsorEditCampaign,
+    path: "/sponsor/addcampaign",
+    name: SponsorAddCampaign,
+    component: SponsorAddCampaign,
     meta: { requiresAuth: true },
-
   },
   {
-  path: '/sponsor/adrequest/:campaign_id',
-  name: SponsorAdRequest,
-  component: SponsorAdRequest,
-  
+    path: `/sponsor/editcampaign/:campaign_id`,
+    name: SponsorEditCampaign,
+    component: SponsorEditCampaign,
+    meta: { requiresAuth: true },
   },
-
+  {
+    path: "/sponsor/adrequest/:campaign_id",
+    name: SponsorAdRequest,
+    component: SponsorAdRequest,
+    meta: { requiresAuth: true },
+  },
   
+  {
+    path : "/sponsor/add_adRequest_data/:campaign_id",
+    name : SponsorAddadd_adRequest_data,
+    component : SponsorAddadd_adRequest_data,
+    meta: { requiresAuth: true },
+  },
 ];
 
 const router = createRouter({

@@ -6,6 +6,7 @@ from flask_jwt_extended import JWTManager
 
 from admin import admin
 from sponsor import sponsor
+from api import api
 from flask_caching import Cache
 
 app = Flask(__name__)
@@ -24,6 +25,8 @@ jwt = JWTManager(app)
 
 app.register_blueprint(admin, url_prefix="/admin")
 app.register_blueprint(sponsor, url_prefix="/sponsor")
+app.register_blueprint(api, url_prefix="/api")
+
 
 
 cache = Cache(app) 
