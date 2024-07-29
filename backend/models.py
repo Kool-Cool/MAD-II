@@ -92,8 +92,10 @@ class Campaign(db.Model):
     goals = db.Column(db.Text, nullable=False)
     niche = db.Column(db.String(255), nullable=False)
 
-    ad_requests = db.relationship("AdRequest", backref="campaign", lazy=True)
-    campaign_flags = db.relationship("CampaignFlag", backref="campaign", lazy=True)
+    ad_requests = db.relationship(
+        "AdRequest", backref="campaign", lazy=True, cascade="all, delete-orphan"
+    )
+    campaign_flags = db.relationship("CampaignFlag", backref="campaign", lazy=True, cascade="all, delete-orphan")
 
     def to_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
@@ -123,11 +125,12 @@ class AdRequest(db.Model):
     )
     messages = db.Column(db.Text)
 
-    negotiations = db.relationship("Negotiation", backref="ad_request", lazy=True)
+    negotiations = db.relationship(
+        "Negotiation", backref="ad_request", lazy=True, cascade="all, delete-orphan"
+    )
 
     def to_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
 
 class Negotiation(db.Model):
     __tablename__ = "negotiations"
