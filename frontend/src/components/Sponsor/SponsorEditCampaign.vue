@@ -117,7 +117,7 @@ export default {
       const campaignId = this.$route.params.campaign_id;
       const token = localStorage.getItem('token');
       try {
-        const response = await axios.put(`/sponsor/editcampaign/${campaignId}`, this.campaign, {
+        const response = await axios.put(`http://localhost:5174/sponsor/adrequest/${campaignId}`, this.campaign, {
           headers: {
             Authorization: `Bearer ${token}`
           }

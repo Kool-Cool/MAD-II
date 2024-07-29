@@ -11,6 +11,9 @@ import SponsorDashboard from "@/components/Sponsor/SponsorDashboard.vue";
 import Logout from "@/views/Logout/Logout.vue";
 import SponsorAddCampaign from "@/components/Sponsor/SponsorAddCampaign.vue";
 import SponsorEditCampaign from "@/components/Sponsor/SponsorEditCampaign.vue";
+import SponsorAdRequest from "@/components/Sponsor/SponsorAdRequest.vue";
+
+
 const routes = [
   { path: "/", name: "Home", component: IndexView },
   { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
@@ -72,9 +75,12 @@ const routes = [
     meta: { requiresAuth: true },
 
   },
-
-
-
+  {
+  path: '/sponsor/adrequest/:campaign_id',
+  name: SponsorAdRequest,
+  component: SponsorAdRequest,
+  
+  },
 
   
 ];

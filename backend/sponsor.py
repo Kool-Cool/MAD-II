@@ -297,3 +297,35 @@ def delete_campaign(campaign_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": str(e), "success": False}), 500
+
+
+@sponsor.route("/adrequest_data/<int:campaign_id>", methods=["GET","POST"])
+@cross_origin()
+@token_required
+@sponsor_required
+def adrequest_campaign(campaign_id):
+    try:
+        # print(campaign_id)
+
+        adrequests = (
+            db.session.query(AdRequest, Influencer, Campaign, Sponsor)
+            .join(Influencer, AdRequest.influencer_id == Influencer.influencer_id)
+            .join(Campaign, AdRequest.campaign_id == Campaign.campaign_id)
+            .join(Sponsor, Campaign.sponsor_id == Sponsor.sponsor_id)
+            .filter(AdRequest.campaign_id == campaign_id)
+            .all()
+        )
+
+        adrequest_data = []
+        for adrequest, influencer, campaign, sponsor in adrequests:
+            adrequest_info = adrequest.to_dict()
+            adrequest_info['influencer'] = influencer.to_dict()
+            adrequest_info['campaign'] = campaign.to_dict()
+            adrequest_info['sponsor'] = sponsor.to_dict()
+            adrequest_data.append(adrequest_info)
+        # print(adrequest_data)
+        return jsonify({"adrequests": adrequest_data}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": str(e), "success": False}), 500
