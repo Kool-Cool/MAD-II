@@ -13,6 +13,7 @@ import SponsorAddCampaign from "@/components/Sponsor/SponsorAddCampaign.vue";
 import SponsorEditCampaign from "@/components/Sponsor/SponsorEditCampaign.vue";
 import SponsorAdRequest from "@/components/Sponsor/SponsorAdRequest.vue";
 import SponsorAddadd_adRequest_data from "@/components/Sponsor/SponsorAddadd_adRequest_data.vue";
+import SearchInfluencer from "@/components/Sponsor/SearchInfluencer.vue";
 
 const routes = [
   { path: "/", name: "Home", component: IndexView },
@@ -85,6 +86,12 @@ const routes = [
     path : "/sponsor/add_adRequest_data/:campaign_id",
     name : SponsorAddadd_adRequest_data,
     component : SponsorAddadd_adRequest_data,
+    meta: { requiresAuth: true },
+  },
+  {
+    path :`/sponsor/search_influencer`,
+    name : SearchInfluencer,
+    component : SearchInfluencer,
     meta: { requiresAuth: true },
   },
 ];
