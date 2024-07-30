@@ -402,3 +402,21 @@ def edit_adRequest_data(ad_request_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": str(e), "success": False}), 500
+    
+
+@sponsor.route("/delete_adrequest_data/<int:ad_request_id>", methods=["DELETE"])
+@cross_origin()
+@token_required
+@sponsor_required
+def delete_adRequest_data(ad_request_id):
+    try:
+        ad_reqst = AdRequest.query.get(ad_request_id)
+        if not ad_reqst:
+            return jsonify({"message": "Ad request not found"}), 404
+        
+        db.session.delete(ad_reqst)
+        db.session.commit()
+        return jsonify({"message": "Ad request deleted successfully", "success": True}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": str(e), "success": False}), 500

@@ -121,7 +121,7 @@ export default {
           messages: this.message,
         };
 
-        console.log("Submitting data:", data);
+        // console.log("Submitting data:", data);
 
         const response = await axios.post("http://127.0.0.1:5000/sponsor/add_adRequest_data", data, {
           headers: {
@@ -132,7 +132,7 @@ export default {
         if (response.data.success) {
           this.successMessage = "Ad request added successfully! Redirecting to Dashboard ! (wait pls :) )";
           setTimeout(() => {
-          this.$router.push('/sponsor/dashboard');
+          this.$router.push(`/sponsor/adrequest/${this.selectedCampaign}`);
         }, 3000);
         } else {
           this.messages = [response.data.message];

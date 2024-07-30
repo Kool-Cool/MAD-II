@@ -95,8 +95,8 @@ export default {
         const response = await axios.get(`/api/adrequest/${ad_request_id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
-          },
-          timeout: 10000, // 10 seconds timeout
+          }
+          // timeout: 10000, // 10 seconds timeout
         });
         this.ad_reqst = response.data;
 
