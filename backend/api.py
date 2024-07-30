@@ -11,9 +11,10 @@ from models import (
 )
 
 api = Blueprint("api", __name__)
-
+from flask_cors import cross_origin
 
 @api.route("/influencers", methods=["GET"])
+@cross_origin()
 def get_all_influencers():
     try:
         influencers = Influencer.query.all()
@@ -23,6 +24,7 @@ def get_all_influencers():
         return jsonify({"message": str(e), "success": False}), 500
 
 @api.route("/influencer/<int:influencer_id>", methods=["GET"])
+@cross_origin()
 def get_influencer(influencer_id):
     try:
         influencer = Influencer.query.get(influencer_id)
@@ -37,6 +39,7 @@ def get_influencer(influencer_id):
 
 
 @api.route("/campaigns", methods=["GET"])
+@cross_origin()
 def get_all_campaigns():
     try:
         campaigns = Campaign.query.all()
@@ -47,6 +50,7 @@ def get_all_campaigns():
 
 
 @api.route("/campaign/<int:campaign_id>", methods=["GET"])
+@cross_origin()
 def get_campaign(campaign_id):
     try:
         campaign = Campaign.query.get(campaign_id)
@@ -61,6 +65,7 @@ def get_campaign(campaign_id):
 
 
 @api.route("/adrequests", methods=["GET"])
+@cross_origin()
 def get_all_adrequests():
     try:
         adrequests = AdRequest.query.all()
@@ -70,6 +75,7 @@ def get_all_adrequests():
         return jsonify({"message": str(e), "success": False}), 500
     
 @api.route("/adrequest/<int:ad_request_id>", methods=["GET"])
+@cross_origin()
 def get_adrequest(ad_request_id):
     try:
         adrequest = AdRequest.query.get(ad_request_id)
