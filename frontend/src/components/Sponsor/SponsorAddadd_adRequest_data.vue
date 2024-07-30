@@ -5,7 +5,7 @@ import Logout from "@/views/Logout/Logout.vue";
     <div>
         <Logout DashboardTitle="New Ad Request"></Logout>
     </div>
-    <p v-if="successMessage" class="text-success mt-3">{{ successMessage }}</p>
+    <p v-if="successMessage" class="alert alert-success mt-3">{{ successMessage }}</p>
     <div class="container mt-5">
     <h2>Add Ad Request Data</h2>
     <form @submit.prevent="submitAdRequest">

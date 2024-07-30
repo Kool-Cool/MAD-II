@@ -384,17 +384,18 @@ def add_adRequest_data():
 @sponsor_required
 def edit_adRequest_data(ad_request_id):
     data = request.json
+    print(data)
     try:
         ad_reqst = AdRequest.query.get(ad_request_id)
         if not ad_reqst:
             return jsonify({"message": "ad_reqst not found"}), 404
         
-        ad_reqst.campaign_id = data.campaign_id
-        ad_reqst.influencer_id= data.influencer_id
-        ad_reqst.requirements=data.requirements
-        ad_reqst.payment_amount=data.payment_amount
-        ad_reqst.status=data.status
-        ad_reqst.message=data.message
+        ad_reqst.campaign_id = data["campaign_id"]
+        ad_reqst.influencer_id= data["influencer_id"]
+        ad_reqst.requirements=data["requirements"]
+        ad_reqst.payment_amount=data["payment_amount"]
+        ad_reqst.status=data["status"]
+        ad_reqst.messages=data["messages"]
     
         db.session.commit()
         return jsonify({"message": "Ad_reqst updated successfully", "success": True}), 200

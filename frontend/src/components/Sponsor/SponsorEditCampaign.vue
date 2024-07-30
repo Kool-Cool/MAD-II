@@ -8,7 +8,7 @@ import axios from "axios";
   <div>
     <Logout DashboardTitle="Sponsor Manage Campaign"></Logout>
   </div>
-  <p v-if="successMessage" class="text-success mt-3">{{ successMessage }}</p>
+  <p v-if="successMessage" class="alert alert-success mt-3">{{ successMessage }}</p>
   <div>
     <div class="container">
       <div v-if="messages.length" class="alert alert-danger">

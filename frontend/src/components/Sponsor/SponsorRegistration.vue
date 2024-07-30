@@ -42,8 +42,8 @@
         </div>
 
         <button :disabled="!isFormValid" type="submit" class="btn btn-primary btn-block">Register</button>
-        <p v-if="errorMessage" class="text-danger mt-3">{{ errorMessage }}</p>
-        <p v-if="successMessage" class="text-success mt-3">{{ successMessage }}</p>
+        <p v-if="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</p>
+        <p v-if="successMessage" class="alert alert-success mt-3">{{ successMessage }}</p>
       </form>
     </div>
   </template>

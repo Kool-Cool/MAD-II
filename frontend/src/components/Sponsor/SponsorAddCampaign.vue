@@ -10,7 +10,7 @@ import { jwtDecode } from "jwt-decode";
     </div>
   
     <div class="container">
-    <p v-if="successMessage" class="text-success mt-3">{{ successMessage }}</p>
+    <p v-if="successMessage" class="alert alert-success mt-3">{{ successMessage }}</p>
       <div v-if="messages.length">
         <div class="alert alert-danger">
           <ul>
