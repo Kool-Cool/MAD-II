@@ -203,7 +203,7 @@ def get_campaign(campaign_id):
 @cross_origin()
 @token_required
 @sponsor_required
-def update_campaign(campaign_id):
+def edit_campaign(campaign_id):
     data = request.json
     try:
         user_id = request.user.get('user_id')
@@ -377,3 +377,27 @@ def add_adRequest_data():
         db.session.rollback()
         return jsonify({"message": str(e), "success": False}), 500
     
+
+@sponsor.route("/edit_adrequest_data/<int:ad_request_id>", methods=["PUT"])
+@cross_origin()
+@token_required
+@sponsor_required
+def edit_adRequest_data(ad_request_id):
+    data = request.json
+    try:
+        ad_reqst = AdRequest.query.get(ad_request_id)
+        if not ad_reqst:
+            return jsonify({"message": "ad_reqst not found"}), 404
+        
+        ad_reqst.campaign_id = data.campaign_id
+        ad_reqst.influencer_id= data.influencer_id
+        ad_reqst.requirements=data.requirements
+        ad_reqst.payment_amount=data.payment_amount
+        ad_reqst.status=data.status
+        ad_reqst.message=data.message
+    
+        db.session.commit()
+        return jsonify({"message": "Ad_reqst updated successfully", "success": True}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": str(e), "success": False}), 500
