@@ -16,6 +16,9 @@ import SponsorAddadd_adRequest_data from "@/components/Sponsor/SponsorAddadd_adR
 import SearchInfluencer from "@/components/Sponsor/SearchInfluencer.vue";
 import SponsorEditAdRequest from "@/components/Sponsor/SponsorEditAdRequest.vue";
 
+import InfluLogin from "@/components/Influencer/InfluLogin.vue";
+import InfluDashboard from "@/components/Influencer/InfluDashboard.vue";
+
 const routes = [
   { path: "/", name: "Home", component: IndexView },
   { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
@@ -99,8 +102,26 @@ const routes = [
     path : "/sponsor/edit_adrequest_data/:ad_request_id",
     name : SponsorEditAdRequest,
     component : SponsorEditAdRequest,
+    meta: { requiresAuth: true },
     
   },
+
+
+
+  // influencer-path
+  {
+    path : "/influencer/login",
+    name : InfluLogin,
+    component : InfluLogin,
+  },
+
+  {
+    path : "/influencer/dashboard",
+    name : InfluDashboard,
+    component : InfluDashboard,
+    meta: { requiresAuth: true },
+  },
+
 ];
 
 const router = createRouter({
