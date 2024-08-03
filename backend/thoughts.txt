@@ -28,10 +28,15 @@ s3]
         - CURD campaign (done)
         - Search Influencer (done)
         - Download CSV (done)
-        - CURD adRequest (ToDo)
+        - CURD adRequest (done)
 
 
 [] Influencer pages
+
+    - search for public campaigns (TODO)
+    - view adRequest (TODO) ,
+    - negotiate the “payment_amount (TODO)
+
 
 [] Backend 
     - chache
