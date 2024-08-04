@@ -66,3 +66,8 @@ def login():
         }, SECRET_KEY, algorithm='HS256')
         return jsonify({"token": token}), 200
     return jsonify({"message": "Invalid credentials"}), 401
+
+
+@influencer.route("/register" , methods=["POST"])
+def register():
+    return ("THis is registreation page !")
