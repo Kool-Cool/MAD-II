@@ -1,19 +1,30 @@
 <script setup>
-import Logout from "@/views/Logout/Logout.vue";
+import Logout from "@/views/Logout/performLogout.vue";
 </script>
 <template>
-    <div>
-        <Logout DashboardTitle="New Ad Request"></Logout>
-    </div>
-    <p v-if="successMessage" class="alert alert-success mt-3">{{ successMessage }}</p>
-    <div class="container mt-5">
+  <div>
+    <Logout DashboardTitle="New Ad Request"></Logout>
+  </div>
+  <p v-if="successMessage" class="alert alert-success mt-3">
+    {{ successMessage }}
+  </p>
+  <div class="container mt-5">
     <h2>Add Ad Request Data</h2>
     <form @submit.prevent="submitAdRequest">
       <div class="form-group">
         <label for="campaign">Campaign</label>
-        <select id="campaign" v-model="selectedCampaign" class="form-control" required>
+        <select
+          id="campaign"
+          v-model="selectedCampaign"
+          class="form-control"
+          required
+        >
           <option disabled value="">Select Campaign</option>
-          <option v-for="campaign in campaigns" :key="campaign.campaign_id" :value="campaign.campaign_id">
+          <option
+            v-for="campaign in campaigns"
+            :key="campaign.campaign_id"
+            :value="campaign.campaign_id"
+          >
             {{ campaign.name }}
           </option>
         </select>
@@ -21,9 +32,18 @@ import Logout from "@/views/Logout/Logout.vue";
 
       <div class="form-group">
         <label for="influencer">Influencer</label>
-        <select id="influencer" v-model="selectedInfluencer" class="form-control" required>
+        <select
+          id="influencer"
+          v-model="selectedInfluencer"
+          class="form-control"
+          required
+        >
           <option disabled value="">Select Influencer</option>
-          <option v-for="influencer in influencers" :key="influencer.influencer_id" :value="influencer.influencer_id">
+          <option
+            v-for="influencer in influencers"
+            :key="influencer.influencer_id"
+            :value="influencer.influencer_id"
+          >
             {{ influencer.name }}
           </option>
         </select>
@@ -31,17 +51,36 @@ import Logout from "@/views/Logout/Logout.vue";
 
       <div class="form-group">
         <label for="requirements">Requirements</label>
-        <input v-model="requirements" type="text" id="requirements" class="form-control" required />
+        <input
+          v-model="requirements"
+          type="text"
+          id="requirements"
+          class="form-control"
+          required
+        />
       </div>
 
       <div class="form-group">
         <label for="message">Message</label>
-        <input v-model="message" type="text" id="message" class="form-control" required />
+        <input
+          v-model="message"
+          type="text"
+          id="message"
+          class="form-control"
+          required
+        />
       </div>
 
       <div class="form-group">
         <label for="payment_amount">Payment Amount: $</label>
-        <input v-model="paymentAmount" type="number" min="0" id="payment_amount" class="form-control" required />
+        <input
+          v-model="paymentAmount"
+          type="number"
+          min="0"
+          id="payment_amount"
+          class="form-control"
+          required
+        />
       </div>
 
       <button type="submit" class="btn btn-primary">Submit</button>
@@ -63,13 +102,13 @@ export default {
     return {
       campaigns: [],
       influencers: [],
-      selectedCampaign: '',
-      selectedInfluencer: '',
+      selectedCampaign: "",
+      selectedInfluencer: "",
       requirements: "",
       message: "",
       paymentAmount: 0,
       messages: [],
-      successMessage : "",
+      successMessage: "",
     };
   },
   created() {
@@ -94,11 +133,14 @@ export default {
       }
 
       try {
-        const response = await axios.get("http://127.0.0.1:5000/api/influencers", {
-          headers: {
-            Authorization: `Bearer ${token}`
+        const response = await axios.get(
+          "http://127.0.0.1:5000/api/influencers",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
+        );
         this.influencers = response.data;
       } catch (error) {
         console.error("Error fetching influencers:", error);
@@ -123,26 +165,34 @@ export default {
 
         // console.log("Submitting data:", data);
 
-        const response = await axios.post("http://127.0.0.1:5000/sponsor/add_adRequest_data", data, {
-          headers: {
-            Authorization: `Bearer ${token}`
+        const response = await axios.post(
+          "http://127.0.0.1:5000/sponsor/add_adRequest_data",
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
+        );
 
         if (response.data.success) {
-          this.successMessage = "Ad request added successfully! Redirecting to Dashboard ! (wait pls :) )";
+          this.successMessage =
+            "Ad request added successfully! Redirecting to Dashboard ! (wait pls :) )";
           setTimeout(() => {
-          this.$router.push(`/sponsor/adrequest/${this.selectedCampaign}`);
-        }, 3000);
+            this.$router.push(`/sponsor/adrequest/${this.selectedCampaign}`);
+          }, 3000);
         } else {
           this.messages = [response.data.message];
         }
       } catch (error) {
         console.error("Error submitting ad request:", error);
-        this.messages = [error.response?.data.message || "An error occurred while adding the ad request."];
+        this.messages = [
+          error.response?.data.message ||
+            "An error occurred while adding the ad request.",
+        ];
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

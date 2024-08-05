@@ -1,7 +1,9 @@
 <template>
   <div>
     <div id="navbar">
-      <a class="navbar-brand" href="/admin/login"><button class="btn btn-primary">Admin Login Only</button></a>
+      <a class="navbar-brand" href="/admin/login">
+        <button class="btn btn-primary">Admin Login Only</button>
+      </a>
     </div>
 
     <div id="flash" v-if="messages && messages.length > 0">
@@ -12,13 +14,27 @@
       </div>
     </div>
 
+    <div v-if="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+
+    <div v-if="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+
     <div class="body-content">
       <div id="button_body">
-        <h1><strong>Influencer Engagement and Sponsorship Coordination Platform</strong></h1>
+        <h1>
+          <strong>Influencer Engagement and Sponsorship Coordination Platform</strong>
+        </h1>
         <h1>Choose Your Role</h1>
         <div class="button">
-          <button class="btn btn-primary" @click="goTo('/sponsor/login')">Sponsor</button>
-          <button class="btn btn-primary" @click="goTo('/influencer/login')">Influencer</button>
+          <button class="btn btn-primary" @click="goTo('/sponsor/login')">
+            Sponsor
+          </button>
+          <button class="btn btn-primary" @click="goTo('/influencer/login')">
+            Influencer
+          </button>
         </div>
       </div>
     </div>
@@ -26,27 +42,23 @@
 </template>
 
 <script>
-import Logout from './Logout/Logout.vue';
+import { mapGetters } from 'vuex';
 
 export default {
-  name: 'Index',
-  data() {
-    return {
-      messages: [] // Assuming you will pass messages as props or fetch them from a store/state
-    };
+  name: "Index",
+  computed: {
+    ...mapGetters(['errorMessage', 'successMessage']),
+    messages() {
+      return [this.errorMessage, this.successMessage].filter(Boolean);
+    }
   },
   methods: {
     goTo(path) {
-      // Function to navigate to a specific path
       this.$router.push(path);
     },
     goToInfluencerLogin() {
-      // Using Vue Router's $router.push with named route
-      this.$router.push({ name: 'influencer.login' });
+      this.$router.push({ name: "influencer.login" });
     }
-  },
-  components: {
-    Logout
   }
 };
 </script>
@@ -59,7 +71,7 @@ export default {
   align-items: center;
   height: 100vh;
   background-color: #f8f9fa;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
 }
 
 #navbar {

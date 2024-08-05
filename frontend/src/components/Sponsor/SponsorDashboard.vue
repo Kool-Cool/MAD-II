@@ -1,5 +1,5 @@
 <script setup>
-import Logout from "@/views/Logout/Logout.vue";
+import Logout from "@/views/Logout/performLogout.vue";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 </script>

@@ -1,5 +1,5 @@
 <script setup>
-import Logout from "@/views/Logout/Logout.vue";
+import Logout from "@/views/Logout/performLogout.vue";
 import axios from "axios";
 </script>
 
@@ -7,7 +7,9 @@ import axios from "axios";
   <Logout DashboardTitle="Edit Ad Request"></Logout>
 
   <div class="container mt-4">
-    <p v-if="successMessage" class=" alert alert-success mt-3">{{ successMessage }}</p>
+    <p v-if="successMessage" class="alert alert-success mt-3">
+      {{ successMessage }}
+    </p>
     <div v-if="err_messages.length">
       <div class="alert alert-danger">
         <ul>
@@ -19,32 +21,68 @@ import axios from "axios";
     <form @submit.prevent="updateAdReqst">
       <div class="form-group">
         <label for="campaignname">Campaign Name:</label>
-        <input type="text" class="form-control" v-model="ad_reqst.campaign_name" readonly />
+        <input
+          type="text"
+          class="form-control"
+          v-model="ad_reqst.campaign_name"
+          readonly
+        />
       </div>
       <div class="form-group">
         <label for="influencername">Influencer Name:</label>
-        <input type="text" class="form-control" v-model="ad_reqst.influencer_name" readonly />
+        <input
+          type="text"
+          class="form-control"
+          v-model="ad_reqst.influencer_name"
+          readonly
+        />
       </div>
       <div class="form-group">
         <label for="requirements">Requirements:</label>
-        <textarea class="form-control" v-model="ad_reqst.requirements"></textarea>
+        <textarea
+          class="form-control"
+          v-model="ad_reqst.requirements"
+        ></textarea>
       </div>
       <div class="form-group">
         <label for="paymentamount">Payment Amount $:</label>
-        <input type="number" class="form-control" min="0" v-model="ad_reqst.payment_amount" />
+        <input
+          type="number"
+          class="form-control"
+          min="0"
+          v-model="ad_reqst.payment_amount"
+        />
       </div>
       <div class="form-group">
         <label for="status">Status:</label>
         <div class="form-check">
-          <input type="radio" class="form-check-input" v-model="ad_reqst.status" value="pending" id="pending" />
+          <input
+            type="radio"
+            class="form-check-input"
+            v-model="ad_reqst.status"
+            value="pending"
+            id="pending"
+          />
           <label class="form-check-label" for="pending">Pending</label>
         </div>
         <div class="form-check">
-          <input type="radio" class="form-check-input" v-model="ad_reqst.status" value="accepted" id="accepted" />
+          <input
+            type="radio"
+            class="form-check-input"
+            v-model="ad_reqst.status"
+            value="accepted"
+            id="accepted"
+          />
           <label class="form-check-label" for="accepted">Accepted</label>
         </div>
         <div class="form-check">
-          <input type="radio" class="form-check-input" v-model="ad_reqst.status" value="rejected" id="rejected" />
+          <input
+            type="radio"
+            class="form-check-input"
+            v-model="ad_reqst.status"
+            value="rejected"
+            id="rejected"
+          />
           <label class="form-check-label" for="rejected">Rejected</label>
         </div>
       </div>
@@ -59,7 +97,7 @@ import axios from "axios";
 
 <script>
 import axios from "axios";
-import Logout from "@/views/Logout/Logout.vue";
+import Logout from "@/views/Logout/performLogout.vue";
 
 export default {
   components: {
@@ -95,7 +133,7 @@ export default {
         const response = await axios.get(`/api/adrequest/${ad_request_id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
-          }
+          },
           // timeout: 10000, // 10 seconds timeout
         });
         this.ad_reqst = response.data;

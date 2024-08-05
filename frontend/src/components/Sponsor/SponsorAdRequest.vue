@@ -1,5 +1,5 @@
 <script setup>
-import Logout from "@/views/Logout/Logout.vue";
+import Logout from "@/views/Logout/performLogout.vue";
 import axios from "axios";
 import { Modal } from "bootstrap";
 </script>
@@ -48,10 +48,16 @@ import { Modal } from "bootstrap";
             <td>{{ request.negotiation.negotiation_status }}</td>
 
             <td>
-              <button class="btn btn-primary btn-sm" @click="editAdRequest(request.ad_request_id)">
+              <button
+                class="btn btn-primary btn-sm"
+                @click="editAdRequest(request.ad_request_id)"
+              >
                 Edit
               </button>
-              <button class="btn btn-danger btn-sm" @click="confirmDelete(request.ad_request_id)">
+              <button
+                class="btn btn-danger btn-sm"
+                @click="confirmDelete(request.ad_request_id)"
+              >
                 Delete
               </button>
             </td>
@@ -62,8 +68,13 @@ import { Modal } from "bootstrap";
   </div>
 
   <!-- Confirmation Modal -->
-  <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
-    aria-hidden="true">
+  <div
+    class="modal fade"
+    id="confirmDeleteModal"
+    tabindex="-1"
+    aria-labelledby="confirmDeleteModalLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -71,16 +82,26 @@ import { Modal } from "bootstrap";
             Confirm Deletion
           </h5>
 
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
           <h5>Are you sure you want to delete this ad request?</h5>
-          <br>
+          <br />
 
-          <p><strong>Requirements :</strong> {{ adRequestDelData.requirements }}</p>
-          <p><strong>Payment Amount :</strong> {{ formatCurrency(adRequestDelData.payment_amount) }}</p>
+          <p>
+            <strong>Requirements :</strong> {{ adRequestDelData.requirements }}
+          </p>
+          <p>
+            <strong>Payment Amount :</strong>
+            {{ formatCurrency(adRequestDelData.payment_amount) }}
+          </p>
           <p><strong>Messages :</strong> {{ adRequestDelData.messages }}</p>
         </div>
         <div class="modal-footer">
