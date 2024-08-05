@@ -70,4 +70,44 @@ def login():
 
 @influencer.route("/register" , methods=["POST"])
 def register():
-    return ("THis is registreation page !")
+    data = request.json
+    #Register as User
+    username = data.get("username")
+    password = data.get("password")
+    email = data.get("email")
+    role = data.get("role")
+
+    if User.query.filter_by(username=username).first():
+        return jsonify({"message": "User already exists"}), 400
+    
+    new_user = User(username=username, email=email, role="influencer")
+    new_user.set_password(password)
+
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+
+        #Register as Influencer
+        user_id = new_user.user_id
+        name = data.get("name")
+        category = data.get("category")
+        niche = data.get("niche")
+        reach = data.get("reach")
+
+        new_influ = Influencer(
+                user_id=new_user.user_id,
+                category=category,
+                name=name,
+                niche=niche,
+                reach=reach,
+            )
+
+        db.session.add(new_influ)
+        db.session.commit()
+        
+        return jsonify({"message": "New Influencer registered successfully"}), 201
+    
+    except Exception as e:
+        error_message = str(e).split("\n")[0]
+        db.session.rollback()
+        return jsonify({"message": error_message}), 400

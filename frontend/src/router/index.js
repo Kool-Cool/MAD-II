@@ -18,6 +18,7 @@ import SponsorEditAdRequest from "@/components/Sponsor/SponsorEditAdRequest.vue"
 
 import InfluLogin from "@/components/Influencer/InfluLogin.vue";
 import InfluDashboard from "@/components/Influencer/InfluDashboard.vue";
+import InflueRegister from "@/components/Influencer/InflueRegister.vue";
 
 const routes = [
   { path: "/", name: "Home", component: IndexView },
@@ -113,6 +114,12 @@ const routes = [
     path : "/influencer/login",
     name : InfluLogin,
     component : InfluLogin,
+  },
+
+  {
+    path : "/influencer/register",
+    name : InflueRegister,
+    component : InflueRegister,
   },
 
   {

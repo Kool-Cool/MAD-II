@@ -1,6 +1,6 @@
 <template>
     <div class="register container mt-5">
-      <h1 class="text-center mb-4">New Sponsor Registration</h1>
+      <h1 class="text-center mb-4">New Influencer Registration</h1>
       <form @submit.prevent="register" class="needs-validation" novalidate>
         <div class="form-group mb-3">
           <label for="username">Username:</label>
@@ -25,20 +25,24 @@
         <div class="form-group mb-3">
           <label for="role">Role:</label>
           <select v-model="role" id="role" class="form-control" required>
-            <option value="sponsor">Sponsor</option>
+            <option value="influencer">Influencer</option>
           </select>
         </div>
         <div class="form-group mb-3">
-          <label for="company_name">Company Name:</label>
-          <input v-model="company_name" type="text" id="company_name" class="form-control" required />
+          <label for="name">Name:</label>
+          <input v-model="name" type="text" id="name" class="form-control" required />
         </div>
         <div class="form-group mb-3">
-          <label for="industry">Industry:</label>
-          <input v-model="industry" type="text" id="industry" class="form-control" required />
+          <label for="category">Category:</label>
+          <input v-model="category" type="text" id="category" class="form-control" required />
         </div>
         <div class="form-group mb-3">
-          <label for="budget">Budget:</label>
-          <input v-model="budget" type="number" min="0" id="budget" class="form-control" required />
+          <label for="reach">Reach:</label>
+          <input v-model="reach" type="number" min="0" id="reach" class="form-control" required />
+        </div>
+        <div class="form-group mb-3">
+          <label for="niche">Niche:</label>
+          <input v-model="niche" type="text" id="niche" class="form-control" required />
         </div>
 
         <button :disabled="!isFormValid" type="submit" class="btn btn-primary btn-block">Register</button>
@@ -61,10 +65,11 @@ export default {
       username: '',
       email: '',
       password: '',
-      role: 'sponsor', // Set role to 'sponsor' directly
-      company_name : '',
-      industry : '',
-      budget :'',
+      role: 'influencer', // Set role to 'sponsor' directly
+      name : '',
+      category : '',
+      reach :'',
+      niche : '',
 
       errorMessage: '',
       successMessage: '', // Add success message property
@@ -72,27 +77,28 @@ export default {
   },
   computed: {
     isFormValid() {
-      return this.username && this.password && this.email && this.company_name && this.industry && this.budget;
+      return this.username && this.password && this.email && this.name && this.category && this.reach && this.niche;
     },
   },
   methods: {
     async register() {
       try {
-        await axios.post('/sponsor/register', {
+        await axios.post('/influencer/register', {
           username: this.username,
           email: this.email,
           password: this.password,
           role: this.role,
-          company_name : this.company_name,
-          industry : this.industry,
-          budget : this.budget,
+          name : this.name,
+          category : this.category,
+          reach : this.reach,
+          niche : this .niche,
 
         });
         this.successMessage = 'Registration successful!! \n Redirecting to Login page (wait)'; // Set success message
         this.errorMessage = ''; // Clear any previous error message
         
         setTimeout(() => {
-          this.$router.push('/sponsor/login');
+          this.$router.push('/influencer/login');
         }, 2000);
       } catch (error) {
         this.errorMessage = error.response.data.message || 'Registration failed';
