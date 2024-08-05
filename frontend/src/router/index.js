@@ -137,9 +137,22 @@ router.beforeEach((to, from, next) => {
     : null;
 
 
-  // console.log("THIS is from routes , userRole:", userRole);
+  // Redirect to dashboard if already authenticated and accessing a login page
+  if (isAuthenticated && to.path.includes('/login')) {
+    if (userRole === 'admin') {
+      next({ name: 'AdminDashboard' });
+    } else if (userRole === 'sponsor') {
+      next({ name: 'SponsorDashboard' });
+    } else if (userRole === 'influencer') {
+      next({ name: 'InfluDashboard' });
+    } else {
+      next({ name: 'Home' });
+    }
+    return;
+  }
 
-  if (to.meta.requiresAuth && to.meta.role && userRole !== to.meta.role) {
+
+  if (to.meta.requiresAuth && (!isAuthenticated || userRole !== to.meta.role)) {
     store.commit(
       "setErrorMessage",
       "You cannot access this page. Please log in!"
