@@ -1,6 +1,6 @@
 
 <template>
-    <performLogout />
+    <performLogout  DashboardTitle="Manage AD Request" />
     <div>
       <div v-if="flashMessages.length" class="alert alert-danger">
         <ul>
@@ -15,7 +15,7 @@
   </div>   
     <div class="welcome-message ">
         <h2>Welcome, {{ userName || 'User-Influencer' }}!</h2>
-        <p>Manage Ad Requests</p>
+        
     </div>
 
   

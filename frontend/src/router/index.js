@@ -22,6 +22,7 @@ import SponsorEditAdRequest from "@/components/Sponsor/SponsorEditAdRequest.vue"
 import InfluLogin from "@/components/Influencer/InfluLogin.vue";
 import InfluDashboard from "@/components/Influencer/InfluDashboard.vue";
 import InflueRegister from "@/components/Influencer/InflueRegister.vue";
+import InfluacceptAdRequest from "@/components/Influencer/InfluAcceptAdRequest.vue";
 
 const routes = [
   { path: "/", name: "Home", component: IndexView },
@@ -121,6 +122,13 @@ const routes = [
     path: "/influencer/dashboard",
     name: "InfluDashboard",
     component: InfluDashboard,
+    meta: { requiresAuth: true, role: "influencer" },
+  },
+
+  {
+    path: "/influencer/acceptAdRequest/:ad_request_id",
+    name: "InfluAcceptAdRequest",
+    component: InfluacceptAdRequest,
     meta: { requiresAuth: true, role: "influencer" },
   },
 ];

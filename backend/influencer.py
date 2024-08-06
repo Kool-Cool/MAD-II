@@ -57,7 +57,7 @@ def login():
     if user and user.check_password(password):
         influencer_data = Influencer.query.filter_by(user_id = user.user_id).first()
         
-        print(influencer_data.to_dict())
+        # print(influencer_data.to_dict())
         
         token = jwt.encode({
             'user_id': user.user_id,
