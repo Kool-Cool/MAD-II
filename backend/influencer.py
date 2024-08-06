@@ -11,6 +11,7 @@ import csv
 from io import StringIO
 from flask import Response
 
+import helper
 
 influencer = Blueprint("influencer", __name__)
 SECRET_KEY = 'your_secret_key'
@@ -70,6 +71,7 @@ def login():
 
 @influencer.route("/register" , methods=["POST"])
 def register():
+
     data = request.json
     #Register as User
     username = data.get("username")
@@ -111,3 +113,27 @@ def register():
         error_message = str(e).split("\n")[0]
         db.session.rollback()
         return jsonify({"message": error_message}), 400
+    
+
+@influencer.route("/dashboard", methods=["GET", "POST"])
+@cross_origin()
+@token_required
+@influencer_required
+def dashboard():
+    try :
+        user_id = request.user.get('user_id')
+        influencer = Influencer.query.filter_by(user_id=user_id).first()
+
+        # print(influencer)
+        
+        if not influencer:
+            return jsonify({"message": "Influencer not found"}), 404
+        
+        influencer_id = influencer.influencer_id
+
+        data = helper.get_influencer_campaigns(influencer_id)
+
+        # print(data)
+        return jsonify({"data": data}), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
