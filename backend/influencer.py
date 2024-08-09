@@ -137,3 +137,82 @@ def dashboard():
         return jsonify({"data": data}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
+    
+
+@influencer.route("/acceptAdRequest/<int:ad_request_id>", methods=["POST", "GET"])
+@cross_origin()
+@token_required
+@influencer_required
+def acceptAdRqst(ad_request_id:int):
+    try:
+        user_id = request.user.get('user_id')
+        influencer = Influencer.query.filter_by(user_id=user_id).first()
+
+        if not influencer:
+            return jsonify({"message": "Influencer not found"}), 404
+        
+        influencer_id = influencer.influencer_id
+        ad_request_id = ad_request_id
+
+        data = helper.get_influencer_campaigns(influencer_id)
+        show_info = None
+        
+        for d in data:
+            if d["ad_request_id"] == ad_request_id:
+                show_info = d
+                break
+
+
+        if request.method == "POST":
+
+            if show_info["negotiation_id"]:
+                nego = Negotiation.query.filter_by(
+                    negotiation_id=show_info["negotiation_id"]
+                ).first()
+                nego.negotiation_status = "accepted"
+                nego.proposed_payment_amount = show_info["payment_amount"]
+
+                try:
+                    db.session.commit()
+
+                except Exception as e:
+                    error_message = str(e).split("\n")[0]
+                    db.session.rollback()
+                    return jsonify({"message": str(error_message)}), 500
+            else:
+                new_nego = Negotiation(
+                    ad_request_id=show_info["ad_request_id"],
+                    influencer_id=show_info["influencer_id"],
+                    negotiation_status="accepted",
+                    proposed_payment_amount=show_info["payment_amount"],
+                )
+
+                try:
+                    db.session.add(new_nego)
+                    db.session.commit()
+                except Exception as e:
+                    error_message = str(e).split("\n")[0]
+                    db.session.rollback()
+                    return jsonify({"message": str(error_message)}), 500
+
+
+            # change ad_request status to accepted !
+            ad_reqst = AdRequest.query.filter_by(
+                ad_request_id=show_info["ad_request_id"]
+            ).first_or_404()
+            ad_reqst.status = "accepted"
+            try:
+                db.session.commit()
+
+            except Exception as e:
+                error_message = str(e).split("\n")[0]
+                db.session.rollback()
+                return jsonify({"message": str(error_message)}), 500
+
+
+            return {"message" : "AD_reqest Accepted Successfully!"}
+        else:
+            return show_info
+
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
