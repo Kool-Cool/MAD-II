@@ -69,6 +69,8 @@ def login():
     return jsonify({"message": "Invalid credentials"}), 401
 
 
+
+
 @influencer.route("/register" , methods=["POST"])
 def register():
 
@@ -115,6 +117,8 @@ def register():
         return jsonify({"message": error_message}), 400
     
 
+
+
 @influencer.route("/dashboard", methods=["GET", "POST"])
 @cross_origin()
 @token_required
@@ -139,6 +143,8 @@ def dashboard():
         return jsonify({"message": str(e)}), 500
     
 
+
+
 @influencer.route("/acceptAdRequest/<int:ad_request_id>", methods=["POST", "GET"])
 @cross_origin()
 @token_required
@@ -161,8 +167,21 @@ def acceptAdRqst(ad_request_id:int):
             if d["ad_request_id"] == ad_request_id:
                 show_info = d
                 break
+        if not show_info:
+            return jsonify({"message": "Ad request not found"}), 404
+    # Check if Already Accepted !!
+        if (
+            show_info["negotiation_status"] == "accepted"
+            and show_info["status"] == "accepted"
+        ):
+            message ="You have Already Accepted the Ad Request !! "
+            return jsonify({"message": message }), 500
 
-
+        # Check if Already Rejected !!
+        elif show_info["negotiation_status"] == "rejected":
+            message ="You have Already Rejected the Ad Request !! "
+            return jsonify({"message": message }), 500
+        
         if request.method == "POST":
 
             if show_info["negotiation_id"]:
@@ -213,6 +232,90 @@ def acceptAdRqst(ad_request_id:int):
             return {"message" : "AD_reqest Accepted Successfully!"}
         else:
             return show_info
+
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    
+
+
+
+
+
+@influencer.route("/rejectAdRequest/<int:ad_request_id>", methods=["POST", "GET"])
+@cross_origin()
+@token_required
+@influencer_required
+def reject_adrequest(ad_request_id):
+    try:
+        user_id = request.user.get('user_id')
+        influencer = Influencer.query.filter_by(user_id=user_id).first()
+
+        if not influencer:
+            return jsonify({"message": "Influencer not found"}), 404
+        
+        influencer_id = influencer.influencer_id
+
+        data = helper.get_influencer_campaigns(influencer_id)
+        show_info = next((d for d in data if d["ad_request_id"] == ad_request_id), None)
+
+       
+
+        if not show_info:
+            return jsonify({"message": "Ad request not found"}), 404
+        
+
+        # Check if Already Accepted !!
+        if (
+            show_info["negotiation_status"] == "accepted"
+            and show_info["status"] == "accepted"
+        ):
+            message = "You have Already Accepted the Ad Request !! "
+            return jsonify({"message": message }), 500
+
+        # Check if Already Rejected !!
+        if (
+            show_info["negotiation_status"] == "rejected"
+            and show_info["status"] == "rejected"
+        ):
+            message= "You have Already Rejected the Ad Request !! "
+            return jsonify({"message": message }), 500
+
+        if request.method == "POST":
+            # Change Ad_request status
+            old_ad_request = AdRequest.query.filter_by(ad_request_id=ad_request_id).first_or_404()
+            old_ad_request.status = "rejected"
+
+            try:
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                return jsonify({"message": str(e).split("\n")[0]}), 500
+
+            # Change Negotiation status to Rejected
+            if show_info["negotiation_id"] is not None:
+                old_nego = Negotiation.query.filter_by(negotiation_id=show_info["negotiation_id"]).first_or_404()
+                old_nego.negotiation_status = "rejected"
+                try:
+                    db.session.commit()
+                except Exception as e:
+                    db.session.rollback()
+                    return jsonify({"message": str(e).split("\n")[0]}), 500
+            else:
+                new_nego = Negotiation(
+                    ad_request_id=ad_request_id,
+                    influencer_id=influencer_id,
+                    negotiation_status="rejected",
+                    proposed_payment_amount=show_info["negotiated_amount"],
+                )
+                try:
+                    db.session.add(new_nego)
+                    db.session.commit()
+                except Exception as e:
+                    db.session.rollback()
+                    return jsonify({"message": str(e).split("\n")[0]}), 500
+            return {"message" : "AD_reqest Rejected Successfully!"}
+        else:
+            return jsonify(show_info)
 
     except Exception as e:
         return jsonify({"message": str(e)}), 500

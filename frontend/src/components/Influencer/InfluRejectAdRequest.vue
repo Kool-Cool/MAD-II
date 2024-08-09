@@ -52,7 +52,7 @@
           <dd class="col-sm-9">{{ adRequest.negotiation_status }}</dd>
         </dl>
   
-        <button type="button" class="btn btn-primary" @click="acceptAdRequest">Accept</button>
+        <button type="button" class="btn btn-danger" @click="rejectAdRequest">Reject</button>
       </div>
       <div v-else>
         <p>Loading ad request details...</p>
@@ -71,12 +71,11 @@
   const router = useRouter();
   const adRequestId = route.params.ad_request_id; // Access route parameter
   
-  console.log(adRequestId);
   const fetchAdRequestDetails = async () => {
     try {
       const token = localStorage.getItem("token");
       
-      const response = await axios.get(`/influencer/acceptAdRequest/${adRequestId}`, {
+      const response = await axios.get(`http://localhost:5000/influencer/rejectAdRequest/${adRequestId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       adRequest.value = response.data;
@@ -85,10 +84,10 @@
     }
   };
   
-  const acceptAdRequest = async () => {
+  const rejectAdRequest = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post(`http://localhost:5000/influencer/acceptAdRequest/${adRequestId}`, {}, {
+      const response = await axios.post(`http://localhost:5000/influencer/rejectAdRequest/${adRequestId}`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
       flashMessages.value = [response.data.message];
@@ -98,8 +97,8 @@
         router.push('/influencer/dashboard');
       }, 3000);
     } catch (error) {
-      console.error('Error accepting ad request:', error);
-      flashMessages.value = ['Error accepting ad request. Please try again.'];
+      console.error('Error Rejecting ad request:', error);
+      flashMessages.value = ['Error Rejecting ad request. Please try again.'];
     }
   };
   

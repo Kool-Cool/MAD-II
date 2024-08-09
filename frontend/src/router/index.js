@@ -23,6 +23,7 @@ import InfluLogin from "@/components/Influencer/InfluLogin.vue";
 import InfluDashboard from "@/components/Influencer/InfluDashboard.vue";
 import InflueRegister from "@/components/Influencer/InflueRegister.vue";
 import InfluacceptAdRequest from "@/components/Influencer/InfluAcceptAdRequest.vue";
+import InfluRejectAdRequest from "@/components/Influencer/InfluRejectAdRequest.vue";
 
 const routes = [
   { path: "/", name: "Home", component: IndexView },
@@ -131,6 +132,15 @@ const routes = [
     component: InfluacceptAdRequest,
     meta: { requiresAuth: true, role: "influencer" },
   },
+  {
+  path: "/influencer/rejectAdRequest/:ad_request_id",
+  name: "InfluRejectAdRequest",
+  component: InfluRejectAdRequest,
+  meta: { requiresAuth: true, role: "influencer" },
+},
+
+
+
 ];
 
 const router = createRouter({
