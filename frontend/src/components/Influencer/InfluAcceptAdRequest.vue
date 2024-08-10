@@ -52,7 +52,7 @@
           <dd class="col-sm-9">{{ adRequest.negotiation_status }}</dd>
         </dl>
   
-        <button type="button" class="btn btn-primary" @click="acceptAdRequest">Accept</button>
+        <button type="button" class="btn btn-success" @click="acceptAdRequest">Accept</button>
       </div>
       <div v-else>
         <p>Loading ad request details...</p>

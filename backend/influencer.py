@@ -246,6 +246,7 @@ def acceptAdRqst(ad_request_id:int):
 @token_required
 @influencer_required
 def reject_adrequest(ad_request_id):
+
     try:
         user_id = request.user.get('user_id')
         influencer = Influencer.query.filter_by(user_id=user_id).first()
@@ -314,6 +315,81 @@ def reject_adrequest(ad_request_id):
                     db.session.rollback()
                     return jsonify({"message": str(e).split("\n")[0]}), 500
             return {"message" : "AD_reqest Rejected Successfully!"}
+        else:
+            return jsonify(show_info)
+
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    
+
+
+@influencer.route("/negoAdRequest/<int:ad_request_id>", methods=["POST", "GET"])
+@cross_origin()
+@token_required
+@influencer_required
+def nego_adrequest(ad_request_id):
+    try:
+        user_id = request.user.get('user_id')
+        influencer = Influencer.query.filter_by(user_id=user_id).first()
+
+        if not influencer:
+            return jsonify({"message": "Influencer not found"}), 404
+        
+        influencer_id = influencer.influencer_id
+
+        data = helper.get_influencer_campaigns(influencer_id)
+        show_info = next((d for d in data if d["ad_request_id"] == ad_request_id), None)
+
+        if not show_info:
+            return jsonify({"message": "Ad request not found"}), 404
+
+        # Check if Already Accepted
+        if show_info["negotiation_status"] == "accepted" and show_info["status"] == "accepted":
+            return jsonify({"message": "You have already accepted the ad request!"}), 400
+
+        # Check if Already Rejected
+        if show_info["negotiation_status"] == "rejected":
+            return jsonify({"message": "You have already rejected the ad request!"}), 400
+        
+        if request.method == "POST":
+            new_nego_amount = request.form.get("nego_amount")
+            if not new_nego_amount:
+                return jsonify({"message":"Empty Response wont accept !"}) , 500
+
+            # Change Ad_request status
+            old_ad_request = AdRequest.query.filter_by(ad_request_id=show_info["ad_request_id"]).first_or_404()
+            old_ad_request.status = "negotiation"
+
+            try:
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                return jsonify({"message": str(e).split("\n")[0]}), 500
+
+            # Change Nego_amount and status
+            if show_info["negotiation_id"] is not None:
+                old_nego = Negotiation.query.filter_by(negotiation_id=show_info["negotiation_id"]).first_or_404()
+                old_nego.proposed_payment_amount = new_nego_amount
+                try:
+                    db.session.commit()
+                except Exception as e:
+                    db.session.rollback()
+                    return jsonify({"message": str(e).split("\n")[0]}), 500
+            else:
+                new_nego = Negotiation(
+                    ad_request_id=show_info["ad_request_id"],
+                    influencer_id=show_info["influencer_id"],
+                    negotiation_status="pending",
+                    proposed_payment_amount=new_nego_amount,
+                )
+                try:
+                    db.session.add(new_nego)
+                    db.session.commit()
+                except Exception as e:
+                    db.session.rollback()
+                    return jsonify({"message": str(e).split("\n")[0]}), 500
+
+            return jsonify({"message": f"UPDATED THE Negotiation ({new_nego_amount})"})
         else:
             return jsonify(show_info)
 
