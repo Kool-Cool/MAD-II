@@ -1,3 +1,4 @@
 
 backend/instance/test.db
 *.db
+/backend/venv

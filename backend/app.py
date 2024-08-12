@@ -18,6 +18,16 @@ app.secret_key = "your_secret_key_here"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['CACHE_TYPE'] = 'simple'
+
+app.config["CELERY_BROKER_URL"] = 'redis://localhost:6379/0'
+app.config["CELERY_RESULT_BACKEND"] = 'redis://localhost:6379/0'
+app.config["MAIL_SERVER"] = 'smtp.yourmailserver.com'
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USERNAME"] = 'your-email@example.com'
+app.config["MAIL_PASSWORD"] = 'your-email-password'
+
+
 db.init_app(app)
 
 CORS(app, resources={r"/*": {"origins": "*"}})
