@@ -12,9 +12,16 @@
         <button class="btn btn-primary" @click="navigateToPublicCampaigns">
           See All Public Campaigns
         </button>
+        <div class="container"></div>
+        <button class="btn btn-warning" @click="navigateToInfluProfile">
+          Update Profile
+        </button>
+
       </nav>
     </div>
-    <div class="welcome-message">
+
+    
+    <div class="welcome-message ">
       <h2>Welcome, {{ userName || "User-Influencer" }}!</h2>
     </div>
 
@@ -104,6 +111,10 @@ const data = ref([]); // List of ad requests
 const navigateToPublicCampaigns = () => {
   router.push("/influencer/search_pubcamp");
 };
+
+const navigateToInfluProfile = () =>{
+  router.push("/influencer/profile")
+}
 
 const acceptAdRequest = (adRequestId) => {
   window.location.href = `/influencer/acceptAdRequest/${adRequestId}`;

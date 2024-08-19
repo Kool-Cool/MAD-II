@@ -26,7 +26,7 @@ import InfluacceptAdRequest from "@/components/Influencer/InfluAcceptAdRequest.v
 import InfluRejectAdRequest from "@/components/Influencer/InfluRejectAdRequest.vue";
 import InfluNegoAdRequest from "@/components/Influencer/influNegoAdRequest.vue";
 import SeachPubCamp from "@/components/Influencer/SeachPubCamp.vue";
-
+import InfluProfile from "@/components/Influencer/InfluProfile.vue";
 
 const routes = [
   { path: "/", name: "Home", component: IndexView },
@@ -155,6 +155,13 @@ const routes = [
     component: SeachPubCamp,
     meta: { requiresAuth: true, role: "influencer" },
   },
+  {
+    path: "/influencer/profile",
+    name: "InfluProfile",
+    component: InfluProfile,
+    meta: { requiresAuth: true, role: "influencer" },
+  },
+
 
 
 

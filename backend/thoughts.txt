@@ -55,7 +55,7 @@ s3]
     - view adRequest (done) ,
     - negotiate the “payment_amount (done)
 
-    - An influencer can update their profile page, which is publicly visible. (TODO)
+    - An influencer can update their profile page, which is publicly visible. (done)
 
 
 

@@ -441,3 +441,49 @@ def sendAdReqst(campaign_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": str(e)}), 500
+    
+
+@influencer.route("/profile", methods=["GET", "POST"])
+@cross_origin()
+@token_required
+# @cache.cached(key_prefix="profile")
+@influencer_required
+def influProfile():
+    try:
+        user_id = request.user.get('user_id')
+        influencer = Influencer.query.filter_by(user_id=user_id).first()
+        print(influencer)
+        if not influencer:
+            return jsonify({"message": "Influencer not found"}), 404
+
+        # Handle GET request
+    
+        influ_data = influencer.to_dict()
+        # print(influ_data)
+
+        # Handle POST request
+        if request.method == "POST":
+            data = request.json
+            print("this is data" , data)
+            # Validate the incoming data
+            if not all(key in data for key in ("name", "niche", "reach")):
+                return jsonify({"message": "Missing required fields"}), 400
+
+            # Update influencer details
+            influencer.name = data.get("name")
+            influencer.niche = data.get("niche")
+            influencer.reach = data.get("reach")
+            influencer.category = data.get("category")
+
+            # Clear relevant cache
+            # cache.delete('profile')
+            db.session.commit()
+
+            return jsonify({"message": "Profile updated successfully"})
+        
+        else:
+            return jsonify({"influ_data": influ_data})
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": str(e)}), 500
