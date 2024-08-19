@@ -69,6 +69,8 @@ def login():
             'role': user.role,
             'exp': datetime.utcnow() + timedelta(hours=1)
         }, SECRET_KEY, algorithm='HS256')
+        user.login_date = datetime.utcnow()
+        db.session.commit()
         return jsonify({"token": token ,  "role": user.role}), 200
     return jsonify({"message": "Invalid credentials"}), 401
 

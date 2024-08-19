@@ -17,6 +17,7 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False) #unique
     role = db.Column(db.Enum("admin", "sponsor", "influencer"), nullable=False)
     created_at = db.Column(db.TIMESTAMP, default=db.func.current_timestamp())
+    login_date = db.Column(db.TIMESTAMP, default=None, onupdate=db.func.current_timestamp()) 
 
     sponsors = db.relationship("Sponsor", backref="user", lazy=True)
     influencers = db.relationship("Influencer", backref="user", lazy=True)
