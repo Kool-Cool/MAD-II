@@ -10,14 +10,18 @@ from datetime import timedelta , timezone
 import random
 
 
-from admin import admin
-from sponsor import sponsor
-from influencer import influencer
-from api import api
+from config import cache  
 from celery import Celery
 from flask_mail import Mail,Message
 from celery.schedules import crontab
 from flask_caching import Cache
+
+from admin import admin
+from sponsor import sponsor
+from influencer import influencer
+from api import api
+
+
 
 
 
@@ -74,7 +78,7 @@ def make_celery(app):
 #     init_db(app)
 
 db.init_app(app)
-cache = Cache(app) 
+cache.init_app(app) 
 celery = make_celery(app)
 jwt = JWTManager(app)
 mail = Mail(app)
