@@ -3,6 +3,11 @@ from flask import Flask, redirect, url_for, flash, make_response, jsonify
 from models import db, init_db
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from flask_caching import Cache
+import datetime
+import time
+from datetime import timedelta , timezone
+import random
 
 
 from admin import admin
@@ -14,7 +19,44 @@ from flask_mail import Mail,Message
 from celery.schedules import crontab
 from flask_caching import Cache
 
+
+
+
 app = Flask(__name__)
+
+
+app.secret_key = "your_secret_key_here"
+
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+app.config['CACHE_TYPE'] = 'redis'
+app.config['CACHE_DEFAULT_TIMEOUT'] = 80
+app.config["CACHE_KEY_PREFIX"] = 'myprefix'
+app.config['CACHE_REDIS_URL'] = "redis://localhost:6379/1"
+
+
+app.config["MAIL_SERVER"] = 'smtp.gmail.com'
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USERNAME"] = 'your-email@example.com'
+app.config["MAIL_PASSWORD"] = 'your-email-password'
+
+
+
+
+CORS(app, resources={r"/*": {"origins": "*"}})
+# CORS(app, resources={r'/*':{'origins': 'http://localhost:5173',"allow_headers": "Access-Control-Allow-Origin"}})
+
+
+
+
+app.register_blueprint(admin, url_prefix="/admin")
+app.register_blueprint(sponsor, url_prefix="/sponsor")
+app.register_blueprint(api, url_prefix="/api")
+app.register_blueprint(influencer, url_prefix="/influencer")
+
+
 
 def make_celery(app):
     celery = Celery(
@@ -25,43 +67,22 @@ def make_celery(app):
     celery.conf.update(app.config)
     return celery
 
-celery = make_celery(app)
 
 
-app.secret_key = "your_secret_key_here"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config['CACHE_TYPE'] = 'simple'
+# @app.before_request
+# def create_tables():
+#     init_db(app)
 
-app.config["MAIL_SERVER"] = 'smtp.gmail.com'
-app.config["MAIL_PORT"] = 587
-app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USERNAME"] = 'your-email@example.com'
-app.config["MAIL_PASSWORD"] = 'your-email-password'
-
-mail = Mail(app)
 db.init_app(app)
-
-
-CORS(app, resources={r"/*": {"origins": "*"}})
-# CORS(app, resources={r'/*':{'origins': 'http://localhost:5173',"allow_headers": "Access-Control-Allow-Origin"}})
-
-jwt = JWTManager(app)
-
-
-app.register_blueprint(admin, url_prefix="/admin")
-app.register_blueprint(sponsor, url_prefix="/sponsor")
-app.register_blueprint(api, url_prefix="/api")
-app.register_blueprint(influencer, url_prefix="/influencer")
-
-
-
-
 cache = Cache(app) 
+celery = make_celery(app)
+jwt = JWTManager(app)
+mail = Mail(app)
 
-@app.before_request
-def create_tables():
-    init_db(app)
+
+
+
+
 
 @celery.task(name="send_daily_reminders")
 def send_daily_reminders():
@@ -94,13 +115,25 @@ def send_daily_reminders():
 
 
 
+from redis import Redis
 
-# @cache.cached(timeout=300) # Cache for 5 minutes
+redis_client = Redis(host='localhost', port=6379, db=1)
+try:
+    redis_client.ping()
+    print("\n\nRedis connection successful\n\n")
+except Exception as e:
+    print(f"\n\nRedis connection failed: {e}\n\n")
+
+
 
 # Routes
+
 @app.route("/home", methods=["GET", "POST"])
+@cache.cached(timeout = 60)
 def home():
-    return jsonify(message="This is Home")
+    time.sleep(5)
+    # return jsonify(message="This is Home")
+    return "Hellow WOrld  ! " + str(random.randint(1,1000))
 
 @app.route("/logout", methods=["POST","GET"])
 def logout():
