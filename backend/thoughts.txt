@@ -100,4 +100,5 @@ s3]
     
 `celery -A app.celery worker --loglevel=info`
 `celery -A app.celery beat --loglevel=info`
-`celery -A app.celery worker --loglevel=info --pool=solo`
+`celery -A app.celery worker --loglevel=info --pool=solo`'
+`pytest --maxfail=1 --disable-warnings -q`

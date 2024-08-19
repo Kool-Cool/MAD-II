@@ -12,7 +12,7 @@ def send_daily_reminders():
         current_time = datetime.now(timezone(timedelta(hours=5, minutes=30))).date()
         users = User.query.filter(
             User.role == 'influencer',
-            (User.last_login == None) | (User.last_login < current_time)
+            (User.login_date == None) | (User.login_date < current_time)
         ).all()
 
         for user in users:

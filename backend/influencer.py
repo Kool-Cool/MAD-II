@@ -454,7 +454,7 @@ def influProfile():
     try:
         user_id = request.user.get('user_id')
         influencer = Influencer.query.filter_by(user_id=user_id).first()
-        print(influencer)
+        # print(influencer)
         if not influencer:
             return jsonify({"message": "Influencer not found"}), 404
 
@@ -466,7 +466,7 @@ def influProfile():
         # Handle POST request
         if request.method == "POST":
             data = request.json
-            print("this is data" , data)
+            # print("this is data" , data)
             # Validate the incoming data
             if not all(key in data for key in ("name", "niche", "reach")):
                 return jsonify({"message": "Missing required fields"}), 400

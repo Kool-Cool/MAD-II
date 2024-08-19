@@ -18,7 +18,7 @@ app = Flask(__name__)
 app.config.from_object(Config)  # Load configurations from the Config class
 
 # Initialize extensions
-db.init_app(app)
+db.init_app(app)  # Initialize db with the app
 cache.init_app(app)
 jwt = JWTManager(app)
 mail = Mail(app)

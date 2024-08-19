@@ -181,7 +181,9 @@ class CampaignFlag(db.Model):
 
 
 def init_db(app):
-    with app.app_context():
+    # db.init_app(app)
+    # with app.app_context():
+    with db.session.no_autoflush:
         db.create_all()
 
         # Check if the database already contains data
