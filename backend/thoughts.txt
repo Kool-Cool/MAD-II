@@ -12,7 +12,63 @@ s3]
 
 
 ## TODO
+steps
 
+s1]
+    Make View (<template> ...)
+
+s2]
+    Add in routes  (under header by importing the Componet)
+
+s3]
+    call api in Componet
+    <script>
+
+
+## TODO
+
+[x] landing page (done)
+
+[x] Admin pages
+    - password security using `Flask-Bcrypt` (done)
+    - login and logout (done)
+        session-based authentication (Flask-Security) 
+        or 
+        stateless, token-based authentication (JWT). for  Vue.js frontend, JWT-based authentication (done)
+    - Approve Sponsor (done)
+    
+    - Flag the User (TODO)
+
+
+[] Sponsor pages
+        - CURD campaign (done)
+        - Search Influencer (done)
+        - Download CSV (done)
+        - CURD adRequest (done)
+
+        -  They can accept ad requests by influencers for public campaigns (TODO)
+
+
+[] Influencer pages
+
+    - search for public campaigns (done)
+    - view adRequest (done) ,
+    - negotiate the “payment_amount (done)
+
+    - An influencer can update their profile page, which is publicly visible. (TODO)
+
+
+
+
+[] Backend 
+    - chache (done)
+    - email / notification / batch work (TODO)
+    - Monthly Activity Report (TODO)
+    - Daily reminders (TODO)
+    
+`celery -A app.celery worker --loglevel=info`
+`celery -A app.celery beat --loglevel=info`
+`celery -A app.celery worker --loglevel=info --pool=solo`
 [x] landing page (done)
 
 [x] Admin pages
