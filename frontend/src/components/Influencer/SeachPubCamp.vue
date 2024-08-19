@@ -1,0 +1,135 @@
+<script setup>
+import Logout from "@/views/Logout/performLogout.vue";
+import { ref, computed, onMounted } from 'vue';
+import axios from "axios";
+
+// Reactive state
+const campaigns = ref([]);
+const searchQuery = ref("");
+const sortKey = ref("");
+
+// Fetch campaigns
+const fetchCampaigns = async () => {
+  try {
+    const response = await axios.get("http://127.0.0.1:5000/api/campaigns/public");
+    campaigns.value = response.data;
+  } catch (error) {
+    console.error("Error fetching campaigns:", error);
+  }
+};
+
+// Format date
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: 'short', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
+// Filter and sort campaigns
+const filteredAndSortedCampaigns = computed(() => {
+  let filtered = campaigns.value.filter((campaign) => {
+    const query = searchQuery.value.toLowerCase();
+    return (
+      campaign.name.toLowerCase().includes(query) ||
+      campaign.niche.toLowerCase().includes(query)
+    );
+  });
+
+  if (sortKey.value.includes("name")) {
+    filtered.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sortKey.value.includes("budget")) {
+    filtered.sort((a, b) => parseFloat(a.budget) - parseFloat(b.budget));
+  }
+
+  if (sortKey.value.endsWith("desc")) {
+    filtered.reverse();
+  }
+
+  return filtered;
+});
+
+// Lifecycle hook
+onMounted(() => {
+  fetchCampaigns();
+});
+</script>
+
+<template>
+  <Logout DashboardTitle="Search Public Campaigns"></Logout>
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">Campaigns List</h2>
+
+    <!-- Search Bar -->
+    <div class="form-group">
+      <input
+        v-model="searchQuery"
+        type="text"
+        class="form-control"
+        placeholder="Search by name or niche"
+      />
+    </div>
+
+    <!-- Sorting Options -->
+    <div class="form-group">
+      <select v-model="sortKey" class="form-control">
+        <option disabled value="">Sort by</option>
+        <option value="name-asc">Name (A-Z)</option>
+        <option value="name-desc">Name (Z-A)</option>
+        <option value="budget-asc">Budget (Ascending)</option>
+        <option value="budget-desc">Budget (Descending)</option>
+      </select>
+    </div>
+
+    <!-- Campaigns Table -->
+    <table class="table table-hover mt-3">
+      <thead class="thead-dark">
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Budget</th>
+          <th>Goals</th>
+          <th>Niche</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="campaign in filteredAndSortedCampaigns"
+          :key="campaign.campaign_id"
+        >
+          <td>{{ campaign.name }}</td>
+          <td>{{ campaign.description }}</td>
+          <td>{{ formatDate(campaign.start_date) }}</td>
+          <td>{{ formatDate(campaign.end_date) }}</td>
+          <td>${{ parseFloat(campaign.budget).toFixed(2) }}</td>
+          <td>{{ campaign.goals }}</td>
+          <td>{{ campaign.niche }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.thead-dark th {
+  background-color: #343a40;
+  color: white;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.text-center {
+  text-align: center;
+}
+</style>

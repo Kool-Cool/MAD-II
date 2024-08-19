@@ -91,15 +91,18 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import { useRouter } from 'vue-router';
 import { jwtDecode } from "jwt-decode";
 import performLogout from "@/views/Logout/performLogout.vue";
+
+const router = useRouter();
 
 const flashMessages = ref([]);
 const userName = ref(""); // Update with actual user name if available
 const data = ref([]); // List of ad requests
 
 const navigateToPublicCampaigns = () => {
-  router.push("/influencer/show_campaign");
+  router.push("/influencer/search_pubcamp");
 };
 
 const acceptAdRequest = (adRequestId) => {

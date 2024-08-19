@@ -9,7 +9,8 @@ from models import (
     UserFlag,
     CampaignFlag,
 )
-
+from flask import request
+from models import db, Campaign
 from config import cache
 
 
@@ -71,6 +72,25 @@ def get_campaign(campaign_id):
 
     
 
+
+@api.route('/campaigns/public', methods=['GET'])
+@cache.cached()
+@cross_origin()
+def get_campaigns():
+    # visibility = request.args.get('visibility', 'public')  # Default to 'public'
+    # search_query = request.args.get('search', '')
+
+    # Filter campaigns based on visibility and search query
+    # campaigns = db.session.query(Campaign).filter(
+    #     Campaign.visibility == "public",
+    #     Campaign.name.ilike(f'%{search_query}%') | Campaign.niche.ilike(f'%{search_query}%')
+    # ).all()
+
+    campaigns = db.session.query(Campaign).filter(Campaign.visibility == "public").all()
+
+    # Convert campaigns to dictionary
+    campaigns_list = [campaign.to_dict() for campaign in campaigns]
+    return jsonify(campaigns_list)
 
 
 @api.route("/adrequests", methods=["GET"])

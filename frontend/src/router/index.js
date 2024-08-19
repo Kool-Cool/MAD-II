@@ -25,6 +25,8 @@ import InflueRegister from "@/components/Influencer/InflueRegister.vue";
 import InfluacceptAdRequest from "@/components/Influencer/InfluAcceptAdRequest.vue";
 import InfluRejectAdRequest from "@/components/Influencer/InfluRejectAdRequest.vue";
 import InfluNegoAdRequest from "@/components/Influencer/influNegoAdRequest.vue";
+import SeachPubCamp from "@/components/Influencer/SeachPubCamp.vue";
+
 
 const routes = [
   { path: "/", name: "Home", component: IndexView },
@@ -139,14 +141,20 @@ const routes = [
   name: "InfluRejectAdRequest",
   component: InfluRejectAdRequest,
   meta: { requiresAuth: true, role: "influencer" },
-},
+  },
 
-{
-  path: "/influencer/negoAdRequest/:ad_request_id",
-  name: "InfluNegoAdRequest",
-  component: InfluNegoAdRequest,
-  meta: { requiresAuth: true, role: "influencer" },
-},
+  {
+    path: "/influencer/negoAdRequest/:ad_request_id",
+    name: "InfluNegoAdRequest",
+    component: InfluNegoAdRequest,
+    meta: { requiresAuth: true, role: "influencer" },
+  },
+  {
+    path: "/influencer/search_pubcamp",
+    name: "SeachPubCamp",
+    component: SeachPubCamp,
+    meta: { requiresAuth: true, role: "influencer" },
+  },
 
 
 
