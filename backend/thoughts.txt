@@ -34,11 +34,14 @@ s3]
 [] Influencer pages
 
     - search for public campaigns (TODO)
-    - view adRequest (TODO) ,
-    - negotiate the “payment_amount (TODO)
+    - view adRequest (done) ,
+    - negotiate the “payment_amount (done)
 
 
 [] Backend 
     - chache
     - email / notification / batch work
     
+`celery -A app.celery worker --loglevel=info`
+`celery -A app.celery beat --loglevel=info`
+`celery -A app.celery worker --loglevel=info --pool=solo`
