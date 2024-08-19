@@ -13,7 +13,7 @@ import csv
 from io import StringIO
 from flask import Response
 
-# from app import cache
+from config import cache
 
 sponsor = Blueprint("sponsor", __name__)
 SECRET_KEY = 'your_secret_key'
@@ -115,6 +115,7 @@ def register():
 @cross_origin()
 @token_required
 @sponsor_required
+@cache.cached(timeout=60, key_prefix='sponsor_dashboard_data')
 def dashboard_data():
     try:
         # Extract the user information from the request context (set by token_required)
@@ -179,6 +180,7 @@ def add_campaign():
 @cross_origin()
 @token_required
 @sponsor_required
+@cache.cached(timeout=60, key_prefix='sponsor_campaign_data')
 def get_campaign(campaign_id):
     try:
         # Fetch the campaign by ID
@@ -303,6 +305,7 @@ def delete_campaign(campaign_id):
 @cross_origin()
 @token_required
 @sponsor_required
+@cache.cached(timeout=60, key_prefix='sponsor_adrequest_data')
 def adrequest_campaign(campaign_id):
     try:
         adrequests = (
@@ -370,6 +373,11 @@ def add_adRequest_data():
         )
         db.session.add(new_ad_req)
         db.session.commit()
+
+
+        # Clear cache for ad request data and dashboard data
+        cache.delete('sponsor_adrequest_data')
+        cache.delete('sponsor_dashboard_data')
         return jsonify({"message": "New ad_request added successfully", "success": True}), 201
 
     
@@ -398,6 +406,11 @@ def edit_adRequest_data(ad_request_id):
         ad_reqst.messages=data["messages"]
     
         db.session.commit()
+
+        # Clear cache for ad request data and dashboard data
+        cache.delete('sponsor_adrequest_data')
+        cache.delete('sponsor_dashboard_data')
+
         return jsonify({"message": "Ad_reqst updated successfully", "success": True}), 200
     except Exception as e:
         db.session.rollback()
@@ -416,6 +429,11 @@ def delete_adRequest_data(ad_request_id):
         
         db.session.delete(ad_reqst)
         db.session.commit()
+
+        # Clear cache for ad request data and dashboard data
+        cache.delete('sponsor_adrequest_data')
+        cache.delete('sponsor_dashboard_data')
+
         return jsonify({"message": "Ad request deleted successfully", "success": True}), 200
     except Exception as e:
         db.session.rollback()

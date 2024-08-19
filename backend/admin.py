@@ -4,7 +4,8 @@ from functools import wraps
 from flask_cors import cross_origin
 import jwt
 from datetime import datetime, timedelta
-from flask_caching import Cache
+
+from config import cache
 
 admin = Blueprint("admin", __name__)
 SECRET_KEY = 'your_secret_key'
@@ -76,7 +77,7 @@ def register():
 @cross_origin()
 @token_required
 @admin_required
-# @cache.cached(timeout=60)
+@cache.cached(key_prefix='dashboard_data')
 def dashboard_data():
     try:
         data = {
@@ -102,6 +103,7 @@ def dashboard_data():
 @admin.route("/pending_sponsors", methods=["GET"])
 @token_required
 @admin_required
+@cache.cached()
 def pending_sponsors():
     try:
         sponsors = Sponsor.query.filter_by(is_approved=False).all()
@@ -120,6 +122,8 @@ def approve_sponsor(sponsor_id):
             return jsonify({"message": "Sponsor not found"}), 404
         sponsor.is_approved = True
         db.session.commit()
+
+        cache.delete('dashboard_data')
         return jsonify({"message": "Sponsor approved successfully"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500

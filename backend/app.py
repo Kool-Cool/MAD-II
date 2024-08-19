@@ -35,7 +35,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 app.config['CACHE_TYPE'] = 'redis'
-app.config['CACHE_DEFAULT_TIMEOUT'] = 80
+app.config['CACHE_DEFAULT_TIMEOUT'] = 100
 app.config["CACHE_KEY_PREFIX"] = 'myprefix'
 app.config['CACHE_REDIS_URL'] = "redis://localhost:6379/1"
 
@@ -133,9 +133,9 @@ except Exception as e:
 # Routes
 
 @app.route("/home", methods=["GET", "POST"])
-@cache.cached(timeout = 60)
+# @cache.cached(timeout = 60)
 def home():
-    time.sleep(5)
+    # time.sleep(5)
     # return jsonify(message="This is Home")
     return "Hellow WOrld  ! " + str(random.randint(1,1000))
 
@@ -143,6 +143,13 @@ def home():
 def logout():
     response = make_response(redirect(url_for("home")))
     response.set_cookie('jwt', '', expires=0,path="/")  # Clear the JWT cookie
+    
+    if app.config.get('CACHE_TYPE') == 'redis':
+        prefix = app.config.get('CACHE_KEY_PREFIX', '')
+        for key in redis_client.scan_iter(f"{prefix}*"):
+            redis_client.delete(key)
+
+
     flash("Log out successful", "success")
     return response
 

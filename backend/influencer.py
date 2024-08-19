@@ -13,9 +13,12 @@ from flask import Response
 
 import helper
 
+from config import cache
+
 influencer = Blueprint("influencer", __name__)
 SECRET_KEY = 'your_secret_key'
 from flask_cors import cross_origin
+
 
 
 def token_required(f):
@@ -123,6 +126,7 @@ def register():
 @cross_origin()
 @token_required
 @influencer_required
+@cache.cached(key_prefix='influencer_dashboard')
 def dashboard():
     try :
         user_id = request.user.get('user_id')
@@ -149,6 +153,7 @@ def dashboard():
 @cross_origin()
 @token_required
 @influencer_required
+@cache.cached(timeout=60, key_prefix='accept_ad_request')
 def acceptAdRqst(ad_request_id:int):
     try:
         user_id = request.user.get('user_id')
@@ -228,7 +233,8 @@ def acceptAdRqst(ad_request_id:int):
                 db.session.rollback()
                 return jsonify({"message": str(error_message)}), 500
 
-
+            # Clear the cache for dashboard data
+            cache.delete('influencer_dashboard')
             return {"message" : "AD_reqest Accepted Successfully!"}
         else:
             return show_info
@@ -245,6 +251,7 @@ def acceptAdRqst(ad_request_id:int):
 @cross_origin()
 @token_required
 @influencer_required
+@cache.cached(timeout=60, key_prefix='reject_ad_request')
 def reject_adrequest(ad_request_id):
 
     try:
@@ -314,6 +321,9 @@ def reject_adrequest(ad_request_id):
                 except Exception as e:
                     db.session.rollback()
                     return jsonify({"message": str(e).split("\n")[0]}), 500
+                
+            # Clear the cache for dashboard data
+            cache.delete('influencer_dashboard')
             return {"message" : "AD_reqest Rejected Successfully!"}
         else:
             return jsonify(show_info)
@@ -327,6 +337,7 @@ def reject_adrequest(ad_request_id):
 @cross_origin()
 @token_required
 @influencer_required
+@cache.cached(timeout=60, key_prefix='nego_ad_request')
 def nego_adrequest(ad_request_id):
     try:
         user_id = request.user.get('user_id')

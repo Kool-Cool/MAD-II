@@ -13,6 +13,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import axios from 'axios';
 
 export default {
   props: {
@@ -26,6 +27,9 @@ export default {
     
     async performLogout() {
       try {
+        // Trigger the backend logout API
+        await axios.post('http://localhost:5000/logout');
+
         // Call Vuex logout action
         await this.logout();
         

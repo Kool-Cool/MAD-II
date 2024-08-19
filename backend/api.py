@@ -18,7 +18,7 @@ api = Blueprint("api", __name__)
 from flask_cors import cross_origin
 
 @api.route("/influencers", methods=["GET"])
-@cache.cached(timeout = 60)
+@cache.cached()
 @cross_origin()
 def get_all_influencers():
     try:
@@ -30,7 +30,7 @@ def get_all_influencers():
 
 
 @api.route("/influencer/<int:influencer_id>", methods=["GET"])
-@cache.cached(timeout = 60)
+@cache.cached()
 @cross_origin()
 def get_influencer(influencer_id):
     try:
@@ -46,7 +46,7 @@ def get_influencer(influencer_id):
 
 
 @api.route("/campaigns", methods=["GET"])
-@cache.cached(timeout = 60)
+@cache.cached()
 @cross_origin()
 def get_all_campaigns():
     try:
@@ -58,7 +58,7 @@ def get_all_campaigns():
 
 
 @api.route("/campaign/<int:campaign_id>", methods=["GET"])
-@cache.cached(timeout = 60)
+@cache.cached()
 @cross_origin()
 def get_campaign(campaign_id):
     try:
@@ -74,7 +74,7 @@ def get_campaign(campaign_id):
 
 
 @api.route("/adrequests", methods=["GET"])
-@cache.cached(timeout = 60)
+@cache.cached()
 @cross_origin()
 def get_all_adrequests():
     try:
@@ -85,7 +85,7 @@ def get_all_adrequests():
         return jsonify({"message": str(e), "success": False}), 500
     
 @api.route("/adrequest/<int:ad_request_id>", methods=["GET"])
-@cache.cached(timeout = 60)
+@cache.cached()
 @cross_origin()
 def get_adrequest(ad_request_id):
     try:
