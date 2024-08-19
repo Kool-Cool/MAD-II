@@ -46,7 +46,7 @@ s3]
         - Download CSV (done)
         - CURD adRequest (done)
 
-        -  They can accept ad requests by influencers for public campaigns (TODO)
+        -  They can accept ad requests by influencers for public campaigns (done)
 
 
 [] Influencer pages

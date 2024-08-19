@@ -406,3 +406,38 @@ def nego_adrequest(ad_request_id):
 
     except Exception as e:
         return jsonify({"message": str(e)}), 500
+    
+
+
+@influencer.route("/sendAdReqst/<int:campaign_id>", methods=["POST"])
+@cross_origin()
+@token_required
+@influencer_required
+def sendAdReqst(campaign_id):
+    try:
+        user_id = request.user.get('user_id')
+        influencer = Influencer.query.filter_by(user_id=user_id).first()
+
+        if not influencer:
+            return jsonify({"message": "Influencer not found"}), 404
+
+        influencer_id = influencer.influencer_id
+        new_ad = AdRequest(
+            campaign_id=campaign_id,
+            influencer_id=influencer_id,
+            requirements="Ad Request from Influencer! Edit and Negotiate it",
+            payment_amount=0,
+            messages="Payment Amount Yet to be decided!",
+        )
+
+        db.session.add(new_ad)
+        db.session.commit()
+
+        # Clear relevant cache
+        cache.delete('influencer_dashboard')
+        
+        return jsonify({"message": "New ad request added successfully", "success": True}), 201
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": str(e)}), 500

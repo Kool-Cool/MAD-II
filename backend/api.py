@@ -18,6 +18,26 @@ from config import cache
 api = Blueprint("api", __name__)
 from flask_cors import cross_origin
 
+
+
+@api.route("/users" ,methods=["GET"])
+@cache.cached()
+@cross_origin()
+def get_all_user():
+    data = dict()
+
+    data["admin"] = [
+        user.to_dict() for user in User.query.filter_by(role="admin").all()
+    ]
+    data["sponsor"] = [
+        user.to_dict() for user in User.query.filter_by(role="sponsor").all()
+    ]
+    data["influencer"] = [
+        user.to_dict() for user in User.query.filter_by(role="influencer").all()
+    ]
+
+    return data
+
 @api.route("/influencers", methods=["GET"])
 @cache.cached()
 @cross_origin()

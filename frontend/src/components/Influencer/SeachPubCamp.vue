@@ -1,7 +1,8 @@
 <script setup>
 import Logout from "@/views/Logout/performLogout.vue";
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from "vue";
 import axios from "axios";
+import {jwtDecode} from "jwt-decode";
 
 // Reactive state
 const campaigns = ref([]);
@@ -20,8 +21,38 @@ const fetchCampaigns = async () => {
 
 // Format date
 const formatDate = (dateString) => {
-  const options = { year: 'numeric', month: 'short', day: 'numeric' };
+  const options = { year: "numeric", month: "short", day: "numeric" };
   return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
+// Send Ad Request
+const token = ref(localStorage.getItem("token"));
+
+const sendAdRequest = async (campaignId) => {
+  const decodedToken = jwtDecode(token.value);
+
+  try {
+    console.log(`Sending Ad request for campaign ID: ${campaignId}`);
+
+    const response = await axios.post(
+      `http://127.0.0.1:5000/influencer/sendAdReqst/${campaignId}`, 
+      {}, 
+      {
+        headers: {
+          Authorization: `Bearer ${token.value}`, // Ensure token is being set
+        },
+      }
+    );
+
+    if (response.data.success) {
+      alert("Ad request sent successfully!");
+    } else {
+      alert("Failed to send ad request: " + response.data.message);
+    }
+  } catch (error) {
+    console.error("Error sending ad request:", error);
+    alert("An error occurred while sending the ad request.");
+  }
 };
 
 // Filter and sort campaigns
@@ -90,6 +121,7 @@ onMounted(() => {
           <th>Budget</th>
           <th>Goals</th>
           <th>Niche</th>
+          <th>Send Ad Request</th>
         </tr>
       </thead>
       <tbody>
@@ -104,6 +136,14 @@ onMounted(() => {
           <td>${{ parseFloat(campaign.budget).toFixed(2) }}</td>
           <td>{{ campaign.goals }}</td>
           <td>{{ campaign.niche }}</td>
+          <td>
+            <button
+              class="btn btn-primary"
+              @click="sendAdRequest(campaign.campaign_id)"
+            >
+              Send Ad Request
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
