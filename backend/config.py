@@ -19,8 +19,8 @@ class Config:
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
-    MAIL_USERNAME = 'your-email@gmail.com'
-    MAIL_PASSWORD = 'your-email-password'
+    MAIL_USERNAME = 'omgrabpoint@gmail.com'
+    MAIL_PASSWORD = 'Omgrab@1234'
 
     # Celery configuration
     CELERY_BROKER_URL = 'redis://localhost:6379/0'

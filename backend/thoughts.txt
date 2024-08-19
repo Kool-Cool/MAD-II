@@ -37,7 +37,7 @@ s3]
         stateless, token-based authentication (JWT). for  Vue.js frontend, JWT-based authentication (done)
     - Approve Sponsor (done)
     
-    - Flag the User (TODO)
+    - Flag the User (done)
 
 
 [] Sponsor pages
@@ -62,9 +62,9 @@ s3]
 
 [] Backend 
     - chache (done)
-    - email / notification / batch work (TODO)
-    - Monthly Activity Report (TODO)
-    - Daily reminders (TODO)
+    - email / notification / batch work (done)
+    - Monthly Activity Report (done)
+    - Daily reminders (done)
     
 `celery -A app.celery worker --loglevel=info`
 `celery -A app.celery beat --loglevel=info`
@@ -89,7 +89,7 @@ s3]
 
 [] Influencer pages
 
-    - search for public campaigns (TODO)
+    - search for public campaigns (done)
     - view adRequest (done) ,
     - negotiate the “payment_amount (done)
 

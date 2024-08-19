@@ -131,6 +131,31 @@ def approve_sponsor(sponsor_id):
         return jsonify({"error": str(e)}), 500
 
 
-# # @admin.before_app_request
-# def setup():
-#     cache.init_app(admin)
+@admin.route("/flag_user", methods=["POST"])
+@token_required
+@admin_required
+def flag_user():
+    data = request.json
+    user_id_to_flag = data.get("user_id")
+    reason = data.get("reason")
+
+    if request.user['user_id'] == user_id_to_flag:
+        return jsonify({"message": "You cannot flag yourself"}), 403
+
+    user_to_flag = User.query.get(user_id_to_flag)
+    if not user_to_flag:
+        return jsonify({"message": "User not found"}), 404
+
+    flag = UserFlag(
+        flagged_by=request.user['user_id'],
+        user_id=user_id_to_flag,
+        reason=reason
+    )
+
+    try:
+        db.session.add(flag)
+        db.session.commit()
+        cache.delete('dashboard_data')
+        return jsonify({"message": "User flagged successfully"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

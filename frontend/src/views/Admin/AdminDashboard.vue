@@ -37,18 +37,19 @@ onMounted(() => {
 });
 
 // Define flagUser function
-const flagUser = (userId) => {
+const flagUser = async (userId) => {
   const reason = prompt('Enter reason for flagging:');
-  console.log(`Flag user with ID: ${userId}`);
   if (reason) {
-          try {
-            axios.post(`/admin/flag/user/${userId}`, { reason });
-            alert('User flagged successfully!');
-          } catch (error) {
-            console.error('Error flagging user:', error);
-          }
-        }
-
+    try {
+      const response = await axios.post('http://localhost:5000/admin/flag_user', { user_id: userId, reason }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      alert('User flagged successfully!');
+    } catch (error) {
+      console.error('Error flagging user:', error);
+      alert('Failed to flag user.');
+    }
+  }
 };
 </script>
 
