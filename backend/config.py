@@ -3,7 +3,7 @@
 from flask_caching import Cache
 from datetime import timedelta
 from celery.schedules import crontab
-
+from models import init_db
 class Config:
     SECRET_KEY = "your_secret_key_here"
     SQLALCHEMY_DATABASE_URI = "sqlite:///test.db"

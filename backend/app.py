@@ -1,11 +1,12 @@
-from flask import Flask, redirect, url_for, flash, make_response, jsonify
+# app.py
+
+from flask import Flask, redirect, url_for, flash, make_response
 from models import db, init_db, User
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from celery import Celery
 from flask_mail import Mail
-from datetime import datetime, timedelta, timezone
-from config import cache, Config  # Import config settings
+from config import cache, Config
 from redis import Redis
 import random
 
@@ -15,23 +16,22 @@ from influencer import influencer
 from api import api
 
 app = Flask(__name__)
-app.config.from_object(Config)  # Load configurations from the Config class
+app.config.from_object(Config)
 
-# Initialize extensions
-db.init_app(app)  # Initialize db with the app
+
+db.init_app(app)
+init_db(app=app)
 cache.init_app(app)
 jwt = JWTManager(app)
 mail = Mail(app)
 
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# Register blueprints
 app.register_blueprint(admin, url_prefix="/admin")
 app.register_blueprint(sponsor, url_prefix="/sponsor")
 app.register_blueprint(api, url_prefix="/api")
 app.register_blueprint(influencer, url_prefix="/influencer")
 
-# Celery setup
 def make_celery(app):
     celery = Celery(
         app.import_name,
@@ -43,7 +43,6 @@ def make_celery(app):
 
 celery = make_celery(app)
 
-# Redis client for direct operations
 redis_client = Redis(host='localhost', port=6379, db=1)
 try:
     redis_client.ping()
@@ -51,7 +50,6 @@ try:
 except Exception as e:
     print(f"\n\nRedis connection failed: {e}\n\n")
 
-# Routes
 @app.route("/home", methods=["GET", "POST"])
 def home():
     return "Hello World! " + str(random.randint(1, 1000))
@@ -70,4 +68,6 @@ def logout():
     return response
 
 if __name__ == "__main__":
+    with app.app_context():
+        init_db(app)
     app.run(debug=True)

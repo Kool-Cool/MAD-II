@@ -8,6 +8,7 @@ from flask import flash
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 
+
 class User(db.Model):
     __tablename__ = "users"
 
@@ -182,8 +183,8 @@ class CampaignFlag(db.Model):
 
 def init_db(app):
     # db.init_app(app)
-    # with app.app_context():
-    with db.session.no_autoflush:
+    with app.app_context():
+    # with db.session.no_autoflush:
         db.create_all()
 
         # Check if the database already contains data
@@ -290,3 +291,4 @@ def init_db(app):
 
             db.session.add(campaign_flag)
             db.session.commit()
+
