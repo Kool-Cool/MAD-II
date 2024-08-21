@@ -206,11 +206,7 @@ export default {
     async confirmDelete(adRequestId) {
       this.adRequestToDelete = adRequestId;
       const token = localStorage.getItem("token");
-      const res = await axios.get(`/api/adrequest/${adRequestId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await axios.get(`/api/adrequest/${adRequestId}`, );
       this.adRequestDelData = res.data;
 
       // Show the modal

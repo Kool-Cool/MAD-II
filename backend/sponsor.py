@@ -410,6 +410,7 @@ def edit_adRequest_data(ad_request_id):
         db.session.commit()
 
         # Clear cache for ad request data and dashboard data
+        cache.delete('api_adrequest_data')
         cache.delete('sponsor_adrequest_data')
         cache.delete('sponsor_dashboard_data')
 

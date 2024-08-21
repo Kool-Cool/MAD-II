@@ -1,4 +1,4 @@
-
+## Influencer Engagement and Sponsorship Coordination Platform
 
 ER diagram
 ![DBSchema]("DBSchema.png")

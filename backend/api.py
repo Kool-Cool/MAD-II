@@ -125,7 +125,7 @@ def get_all_adrequests():
         return jsonify({"message": str(e), "success": False}), 500
     
 @api.route("/adrequest/<int:ad_request_id>", methods=["GET"])
-@cache.cached()
+@cache.cached(key_prefix='api_adrequest_data')
 @cross_origin()
 def get_adrequest(ad_request_id):
     try:
