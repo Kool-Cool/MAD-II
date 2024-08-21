@@ -170,7 +170,7 @@ export default {
       const token = localStorage.getItem("token");
       try {
         const response = await axios.put(
-          `http://localhost:5174/sponsor/adrequest/${campaignId}`,
+          `/sponsor/editcampaign/${campaignId}`,
           this.campaign,
           {
             headers: {

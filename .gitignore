@@ -2,3 +2,5 @@
 backend/instance/test.db
 *.db
 /backend/venv
+backend/instance/test.db
+/backend/instance

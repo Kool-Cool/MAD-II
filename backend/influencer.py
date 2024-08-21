@@ -6,9 +6,6 @@ from functools import wraps
 from flask_cors import cross_origin
 import jwt
 from datetime import datetime, timedelta
-from flask_caching import Cache
-import csv
-from io import StringIO
 from flask import Response
 
 import helper
@@ -155,7 +152,6 @@ def dashboard():
 @cross_origin()
 @token_required
 @influencer_required
-@cache.cached(timeout=60, key_prefix='accept_ad_request')
 def acceptAdRqst(ad_request_id:int):
     try:
         user_id = request.user.get('user_id')
@@ -235,7 +231,7 @@ def acceptAdRqst(ad_request_id:int):
                 db.session.rollback()
                 return jsonify({"message": str(error_message)}), 500
 
-            # Clear the cache for dashboard data
+            # #Clear the cache for dashboard data
             cache.delete('influencer_dashboard')
             return {"message" : "AD_reqest Accepted Successfully!"}
         else:
@@ -253,7 +249,6 @@ def acceptAdRqst(ad_request_id:int):
 @cross_origin()
 @token_required
 @influencer_required
-@cache.cached(timeout=60, key_prefix='reject_ad_request')
 def reject_adrequest(ad_request_id):
 
     try:
@@ -324,7 +319,7 @@ def reject_adrequest(ad_request_id):
                     db.session.rollback()
                     return jsonify({"message": str(e).split("\n")[0]}), 500
                 
-            # Clear the cache for dashboard data
+            # #Clear the cache for dashboard data
             cache.delete('influencer_dashboard')
             return {"message" : "AD_reqest Rejected Successfully!"}
         else:
@@ -339,7 +334,6 @@ def reject_adrequest(ad_request_id):
 @cross_origin()
 @token_required
 @influencer_required
-@cache.cached(timeout=60, key_prefix='nego_ad_request')
 def nego_adrequest(ad_request_id):
     try:
         user_id = request.user.get('user_id')
@@ -435,7 +429,7 @@ def sendAdReqst(campaign_id):
         db.session.add(new_ad)
         db.session.commit()
 
-        # Clear relevant cache
+        # #Clear relevant cache
         cache.delete('influencer_dashboard')
         
         return jsonify({"message": "New ad request added successfully", "success": True}), 201
@@ -448,7 +442,6 @@ def sendAdReqst(campaign_id):
 @influencer.route("/profile", methods=["GET", "POST"])
 @cross_origin()
 @token_required
-# @cache.cached(key_prefix="profile")
 @influencer_required
 def influProfile():
     try:
@@ -477,8 +470,7 @@ def influProfile():
             influencer.reach = data.get("reach")
             influencer.category = data.get("category")
 
-            # Clear relevant cache
-            # cache.delete('profile')
+
             db.session.commit()
 
             return jsonify({"message": "Profile updated successfully"})

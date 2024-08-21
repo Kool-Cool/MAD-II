@@ -8,7 +8,6 @@ from functools import wraps
 from flask_cors import cross_origin
 import jwt
 from datetime import datetime, timedelta
-from flask_caching import Cache
 import csv
 from io import StringIO
 from flask import Response
@@ -17,7 +16,7 @@ from config import cache
 
 sponsor = Blueprint("sponsor", __name__)
 SECRET_KEY = 'your_secret_key'
-# cache = Cache(config={'CACHE_TYPE': 'simple'})
+
 
 def token_required(f):
     @wraps(f)
@@ -168,6 +167,7 @@ def add_campaign():
 
         db.session.add(new_campaign)
         db.session.commit()
+        cache.delete('sponsor_dashboard_data')
         return jsonify({"message": "New campaign added successfully", "success": True}), 201
 
     except Exception as e:
@@ -182,7 +182,7 @@ def add_campaign():
 @cross_origin()
 @token_required
 @sponsor_required
-@cache.cached(timeout=60, key_prefix='sponsor_campaign_data')
+# # @cache.cached(timeout=60, key_prefix='sponsor_campaign_data')
 def get_campaign(campaign_id):
     try:
         # Fetch the campaign by ID
@@ -209,6 +209,7 @@ def get_campaign(campaign_id):
 @sponsor_required
 def edit_campaign(campaign_id):
     data = request.json
+    print(data)
     try:
         user_id = request.user.get('user_id')
         sponsor_data = Sponsor.query.filter_by(user_id=user_id).first()
@@ -229,6 +230,8 @@ def edit_campaign(campaign_id):
         campaign.niche = data.get("niche")
 
         db.session.commit()
+
+
         return jsonify({"message": "Campaign updated successfully", "success": True}), 200
 
     except Exception as e:
@@ -296,6 +299,8 @@ def delete_campaign(campaign_id):
 
         db.session.delete(campaign)
         db.session.commit()
+        cache.delete(f'sponsor_campaign_data_{campaign_id}')
+        cache.delete('sponsor_dashboard_data')
         return jsonify({"message": "Campaign deleted successfully", "success": True}), 200
 
     except Exception as e:
@@ -307,7 +312,7 @@ def delete_campaign(campaign_id):
 @cross_origin()
 @token_required
 @sponsor_required
-@cache.cached(timeout=60, key_prefix='sponsor_adrequest_data')
+# # @cache.cached(timeout=60, key_prefix='sponsor_adrequest_data')
 def adrequest_campaign(campaign_id):
     try:
         adrequests = (
@@ -378,7 +383,7 @@ def add_adRequest_data():
 
 
         # Clear cache for ad request data and dashboard data
-        cache.delete('sponsor_adrequest_data')
+        cache.delete(f'sponsor_adrequest_data_{data["campaign_id"]}')
         cache.delete('sponsor_dashboard_data')
         return jsonify({"message": "New ad_request added successfully", "success": True}), 201
 
@@ -410,8 +415,7 @@ def edit_adRequest_data(ad_request_id):
         db.session.commit()
 
         # Clear cache for ad request data and dashboard data
-        cache.delete('api_adrequest_data')
-        cache.delete('sponsor_adrequest_data')
+        cache.delete(f'sponsor_adrequest_data_{ad_reqst.campaign_id}')
         cache.delete('sponsor_dashboard_data')
 
         return jsonify({"message": "Ad_reqst updated successfully", "success": True}), 200
