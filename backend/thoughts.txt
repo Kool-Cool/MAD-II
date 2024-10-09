@@ -98,7 +98,10 @@ s3]
     - chache
     - email / notification / batch work
     
+start redis server
+`python app.py`
+` npm run dev`
 `celery -A app.celery worker --loglevel=info`
 `celery -A app.celery beat --loglevel=info`
-`celery -A app.celery worker --loglevel=info --pool=solo`'
+`celery -A app.celery worker --loglevel=info --pool=solo`
 `pytest --maxfail=1 --disable-warnings -q`
